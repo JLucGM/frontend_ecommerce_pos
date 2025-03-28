@@ -91,7 +91,7 @@ export default function RootLayout({
             </NavigationMenuList>
           </NavigationMenu>
         </div>
-        <div className="mx-5 p-0">
+        <div className=" p-0">
           <CartProvider>
             {children}
           </CartProvider>

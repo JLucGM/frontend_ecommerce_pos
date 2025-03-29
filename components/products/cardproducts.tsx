@@ -17,6 +17,7 @@ interface Props {
         product_name: string;
         product_price: number;
         quantity: number;
+        selectedAttributes?: { [key: string]: string }; // Agrega esta propiedad opcional
     }) => void;
     handleAttributeChange: (attributeName: string, value: string) => void;
     handleAddVariableProduct: (product: Product) => void;
@@ -29,7 +30,6 @@ export const CardProducts = ({ product, addToCart, handleAttributeChange, handle
 
     const handleAddToCart = () => {
         if (product.combinations.length === 0) {
-            // Si no tiene combinaciones, agrega directamente
             addToCart({
                 id: product.id,
                 product_name: product.product_name,
@@ -37,17 +37,20 @@ export const CardProducts = ({ product, addToCart, handleAttributeChange, handle
                 quantity: 1,
             });
         } else {
-            // Si tiene combinaciones, maneja la lógica de agregar con atributos
-            handleAddVariableProduct(product);
+            addToCart({
+                id: product.id,
+                product_name: product.product_name,
+                product_price: parseFloat(product.product_price),
+                quantity: 1,
+                selectedAttributes: { ...selectedAttributes }, // Incluye las combinaciones seleccionadas
+            });
         }
 
-        // Cambia el estado para mostrar el mensaje de confirmación
         setAddedToCart(true);
 
-        // Restablecer el estado después de 2 segundos
         setTimeout(() => {
             setAddedToCart(false);
-        }, 2000); // Cambia el tiempo según sea necesario
+        }, 2000);
     };
 
     return (

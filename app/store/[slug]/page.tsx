@@ -75,7 +75,7 @@ export default function Store() {
       product_price: parseFloat(selectedCombination.combination_price),
       quantity: 1,
       combination_id: selectedCombination.id,
-      attributes: selectedAttributes,
+      selectedAttributes: selectedAttributes,
     });
 
     setSelectedAttributes({}); // Limpia los atributos seleccionados

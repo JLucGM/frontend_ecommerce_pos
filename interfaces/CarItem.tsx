@@ -4,5 +4,5 @@ export interface CartItem {
     product_price: number;
     quantity: number;
     combination_id?: number; // ID de la combinación seleccionada (opcional)
-    attributes?: { [key: string]: string }; // Atributos seleccionados (opcional)
+    selectedAttributes?: { [key: string]: string }; // Agrega las combinaciones seleccionadas
   }

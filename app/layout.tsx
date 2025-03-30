@@ -75,13 +75,13 @@ export default function RootLayout({
                   <NavigationMenuLink className={`${navigationMenuTriggerStyle()} `}>
                     <div className="relative">
 
-                    <Badge 
-                    className="absolute -top-2 -right-2 translate-x-1/2 -translate-y-1/2 bg-white"
-                    variant="outline">
-                      5
+                      <Badge
+                        className="absolute -top-2 -right-2 translate-x-1/2 -translate-y-1/2 bg-white"
+                        variant="outline">
+                        5
                       </Badge>
 
-                    <ShoppingCart className="size-5 text-black" />
+                      <ShoppingCart className="size-5 text-black" />
                     </div>
                   </NavigationMenuLink>
                 </Link>

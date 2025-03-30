@@ -1,20 +1,39 @@
-"use client";
+'use client'
 
-import { useParams } from "next/navigation";
+import { CardProducts } from "@/components/products/cardproducts";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCart } from "@/context/CartContext";
-import { Product } from "@/interfaces/Product";
-import { CardProducts } from "@/components/products/cardproducts";
 import { useFetchProducts } from "@/hook/useFetchProducts";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 
 export default function Store() {
   const { slug } = useParams(); // Obtén el slug de la URL
-  const validSlug = typeof slug === 'string' ? slug : '';
+  const validSlug = typeof slug === "string" ? slug : "";
 
   const { products, loading, error } = useFetchProducts(validSlug); // Usa el hook personalizado
   const { addToCart } = useCart(); // Accede a la función para agregar productos al carrito
   const [selectedAttributes, setSelectedAttributes] = useState<{ [key: string]: string }>({}); // Atributos seleccionados
+  const [selectedCategory, setSelectedCategory] = useState<string | null>("all"); // Categoría seleccionada
+
+  // Extraer categorías únicas de los productos
+  const categories = Array.from(
+    new Set(
+      products.flatMap((product) =>
+        product.categories.map((category: any) => category.category_name)
+      )
+    )
+  );
+
+  // Filtrar productos por categoría
+  const filteredProducts =
+    selectedCategory === "all"
+      ? products
+      : products.filter((product) =>
+          product.categories.some(
+            (category: any) => category.category_name === selectedCategory
+          )
+        );
 
   // Maneja la selección de atributos
   const handleAttributeChange = (attributeName: string, value: string) => {
@@ -63,13 +82,27 @@ export default function Store() {
       ) : error ? (
         <div>Error: {error}</div>
       ) : (
-        <Tabs defaultValue="allProducts" className="w-auto relatives pt-4">
+        <Tabs defaultValue="all" className="w-auto relatives pt-4">
           <TabsList>
-            <TabsTrigger value="allProducts">Todos los productos</TabsTrigger>
+            <TabsTrigger
+              value="all"
+              onClick={() => setSelectedCategory("all")}
+            >
+              Todos los productos
+            </TabsTrigger>
+            {categories.map((category) => (
+              <TabsTrigger
+                key={category}
+                value={category}
+                onClick={() => setSelectedCategory(category)}
+              >
+                {category}
+              </TabsTrigger>
+            ))}
           </TabsList>
-          <TabsContent value="allProducts" className="py-8 px-28s">
+          <TabsContent value={selectedCategory || "all"} className="py-8 px-28s">
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {products.map((product) => (
+              {filteredProducts.map((product) => (
                 <CardProducts
                   key={product.id}
                   product={product}

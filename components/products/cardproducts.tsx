@@ -63,6 +63,25 @@ export const CardProducts = ({ product, addToCart, handleAttributeChange, handle
     }, [selectedAttributes, product.combinations]);
 
     const handleAddToCart = () => {
+        if (product.combinations.length === 0) {
+            // Si el producto no tiene combinaciones, agrégalo directamente al carrito
+            addToCart({
+                id: product.id,
+                product_name: product.product_name,
+                product_price: parseFloat(product.product_price),
+                quantity: 1,
+            });
+
+            setAddedToCart(true);
+
+            setTimeout(() => {
+                setAddedToCart(false);
+            }, 2000);
+
+            return;
+        }
+
+        // Si el producto tiene combinaciones, verifica que se haya seleccionado una combinación válida
         const selectedCombination = findSelectedCombination();
 
         if (!selectedCombination) {
@@ -83,6 +102,17 @@ export const CardProducts = ({ product, addToCart, handleAttributeChange, handle
         setTimeout(() => {
             setAddedToCart(false);
         }, 2000);
+    };
+
+    // Determina si el botón debe estar desactivado
+    const isAddToCartDisabled = () => {
+        if (product.combinations.length === 0) {
+            // Si no hay combinaciones, el botón siempre está habilitado
+            return false;
+        }
+
+        // Si hay combinaciones, verifica si se ha seleccionado una combinación válida
+        return !findSelectedCombination();
     };
 
     return (
@@ -115,17 +145,36 @@ export const CardProducts = ({ product, addToCart, handleAttributeChange, handle
 
                     <CardFooter className="flex justify-between">
                         {/* Mostrar el rango de precios */}
-                        <p>{getPriceRange()}</p>
+                        <p className="font-bold">{getPriceRange()}</p>
                     </CardFooter>
                 </Card>
             </DialogTrigger>
 
             <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
-                    <DialogTitle className="text-2xl">{product.product_name}</DialogTitle>
+                    <DialogTitle className="text-2xl flex">
+                        {product.product_name}
+                        {product.combinations.length === 0 ? (
+                            // Producto simple: muestra el código de barras directamente
+                            <p className="ml-2">
+                                #{product.stocks[0]?.product_barcode || null}
+                            </p>
+                        ) : findSelectedCombination() ? (
+                            // Producto con combinaciones: muestra el código de barras de la combinación seleccionada
+                            <p className="ml-2">
+                                #
+                                {product.stocks.find(
+                                    (stock: any) =>
+                                        stock.combination_id === findSelectedCombination()?.id
+                                )?.product_barcode || null}
+                            </p>
+                        ) : (
+                            null // No hay combinación seleccionada
+                        )}
+                    </DialogTitle>
                 </DialogHeader>
 
-                <ScrollArea className="max-h-96 overflow-y-auto">
+                <ScrollArea className="max-h-96 overflow-y-auto px-3">
                     <div className="border rounded-xl px-4 mb-4 bg-foreground/10">
                         <Accordion type="single" collapsible>
                             <AccordionItem value="item-1">
@@ -173,11 +222,34 @@ export const CardProducts = ({ product, addToCart, handleAttributeChange, handle
                                                 />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {attributeValues.map((value) => (
-                                                    <SelectItem key={value} value={value}>
-                                                        {value}
-                                                    </SelectItem>
-                                                ))}
+                                                {attributeValues
+                                                    .filter((value) => {
+                                                        // Encuentra la combinación correspondiente al valor actual
+                                                        const matchingCombination = product.combinations.find((comb: any) =>
+                                                            comb.combination_attribute_value.some(
+                                                                (attr: any) =>
+                                                                    attr.attribute_value.attribute_value_name === value
+                                                            )
+                                                        );
+
+                                                        // Verifica si la combinación tiene stock disponible
+                                                        const hasStock =
+                                                            matchingCombination &&
+                                                            product.stocks.some(
+                                                                (stock: any) =>
+                                                                    stock.combination_id === matchingCombination.id &&
+                                                                    parseInt(stock.quantity, 10) > 0
+                                                            );
+
+                                                        return hasStock; // Solo incluye combinaciones con stock
+                                                    })
+                                                    .map((value) => {
+                                                        return (
+                                                            <SelectItem key={value} value={value}>
+                                                                {value}
+                                                            </SelectItem>
+                                                        );
+                                                    })}
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -187,19 +259,26 @@ export const CardProducts = ({ product, addToCart, handleAttributeChange, handle
                     )}
                 </ScrollArea>
 
-                {/* Mostrar el precio de la combinación seleccionada */}
-                <div className="text-md font-bold">
-                    {selectedPrice ? (
-                        <p>Precio: {selectedPrice}</p>
-                    ) : (
-                        null // No hay combinación seleccionada
-                    )}
-                </div>
 
                 <DialogFooter className="items-center gap-4 mt-4">
+                    {/* Mostrar el precio */}
+                    <div className="text-md font-bold">
+                        {product.combinations.length === 0 ? (
+                            // Producto simple: muestra el precio directamente
+                            <p>Precio: ${parseFloat(product.product_price).toFixed(2)}</p>
+                        ) : selectedPrice ? (
+                            // Producto con combinaciones: muestra el precio de la combinación seleccionada
+                            <p>Precio: {selectedPrice}</p>
+                        ) : (
+                            <p className="text-destructive">No disponible</p>
+                        )}
+                    </div>
+
                     <Button
                         onClick={handleAddToCart}
-                        className={`text-white ${addedToCart ? "bg-green-500" : "bg-blue-500"}`}
+                        disabled={isAddToCartDisabled()} // Desactiva el botón si no se cumplen las condiciones
+                        className={`text-white ${addedToCart ? "bg-green-500" : ""} ${isAddToCartDisabled() ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
                     >
                         {addedToCart ? "¡Listo!" : "Agregar al carrito"}
                     </Button>

@@ -1,12 +1,8 @@
 "use client";
 
-import { Title } from "@/components/title";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShoppingBag } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { CartCardProducts } from "@/components/cart/cartcardproducts";
@@ -14,9 +10,19 @@ import { CartCardProducts } from "@/components/cart/cartcardproducts";
 export default function CartPage() {
   const { cart, removeFromCart, clearCart } = useCart();
 
+  // Calcula el subtotal sumando el precio * cantidad de cada producto
+  const subtotal = cart.reduce((total, item) => total + item.product_price * item.quantity, 0);
+
+  // Define los impuestos como un porcentaje del subtotal (por ejemplo, 18%)
+  // const taxRate = 0.18; // 18%
+  // const taxes = subtotal * taxRate;
+
+  // Calcula el total sumando el subtotal y los impuestos
+  // const total = subtotal + taxes;
+  const total = subtotal // + taxes; // Si decides usar impuestos, descomenta esta línea
+
   return (
     <div className="pt-21">
-      {/* <Title title="Carrito de compras" /> */}
       {cart.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-screen text-center">
           <ShoppingBag className="h-16 w-16 text-gray-500 mb-4" />
@@ -33,11 +39,10 @@ export default function CartPage() {
 
             <div className="flex flex-col lg:flex-row gap-8">
               {/* Lista de productos */}
-
               <div className="flex-1">
                 {cart.map((item) => (
                   <CartCardProducts
-                  key={`${item.id}-${JSON.stringify(item.selectedAttributes || {})}`}
+                    key={`${item.id}-${JSON.stringify(item.selectedAttributes || {})}`}
                     data={{
                       id: item.id,
                       name: item.product_name,
@@ -45,73 +50,44 @@ export default function CartPage() {
                       quantity: item.quantity,
                       selectedAttributes: item.selectedAttributes,
                       removeFromCart: () => removeFromCart(item.id),
-                      
-                      // imageUrl: item.product_image,
+                      imageUrl: item.imageUrl, // Asegúrate de que `imageUrl` esté disponible
                     }}
                   />
                 ))}
-
               </div>
 
               {/* Resumen del pedido */}
               <div className="w-full lg:w-1/3">
-
-              <Card className="h-fit">
-                <CardHeader>
-                  <CardTitle className="text-lg">Resumen del pedido</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span>€389.97</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Envío</span>
-                    <span>Gratis</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Impuestos</span>
-                    <span>€81.89</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between font-medium">
-                    <span>Total</span>
-                    <span>€471.86</span>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button className="w-full">Proceder al pago</Button>
-                </CardFooter>
-              </Card>
-
-            </div>
+                <Card className="h-fit">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Resumen del pedido</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Subtotal</span>
+                      <span>€{subtotal.toFixed(2)}</span> {/* Muestra el subtotal dinámico */}
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Envío</span>
+                      <span>Gratis</span>
+                    </div>
+                    {/* <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Impuestos</span>
+                      <span>€{taxes.toFixed(2)}</span> 
+                    </div> */}
+                    <Separator />
+                    <div className="flex justify-between font-medium">
+                      <span>Total</span>
+                      <span>€{total.toFixed(2)}</span> {/* Muestra el total dinámico */}
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button className="w-full">Proceder al pago</Button>
+                  </CardFooter>
+                </Card>
+              </div>
             </div>
           </div>
-          {/* {cart.map((item) => (
-            <div key={item.id} className="border p-4 mb-4 rounded">
-              <h2 className="text-lg font-bold">{item.product_name}</h2>
-              <p>Precio: ${item.product_price}</p>
-              <p>Cantidad: {item.quantity}</p>
-              {item.selectedAttributes && (
-                <div>
-                  <h3 className="font-semibold">Combinaciones seleccionadas:</h3>
-                  <ul>
-                    {Object.entries(item.selectedAttributes).map(([key, value]) => (
-                      <li key={key}>
-                        {key}: {value}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              <Button
-                variant={"destructive"}
-                onClick={() => removeFromCart(item.id)}
-              >
-                Eliminar
-              </Button>
-            </div>
-          ))} */}
           <Button
             onClick={clearCart}
             className="bg-gray-500 text-white px-4 py-2 rounded mt-4"

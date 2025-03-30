@@ -1,28 +1,29 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Image from "next/image"
+import * as React from "react";
+import Image from "next/image";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Trash2, Minus, Plus } from "lucide-react"
-import { Separator } from "@/components/ui/separator"
-import { useCart } from "@/context/CartContext"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Trash2, Minus, Plus } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { useCart } from "@/context/CartContext";
 
 interface CartCardProductsProps {
   data: {
-    id: number
-    name: string
-    price: number
-    imageUrl?: string
-    quantity?: number
-    removeFromCart?: () => void
-    updateQuantity?: (quantity: number) => void
+    id: number;
+    name: string;
+    price: number;
+    imageUrl?: string; // URL de la imagen del producto
+    quantity?: number;
+    removeFromCart?: () => void;
+    updateQuantity?: (quantity: number) => void;
     selectedAttributes?: {
-      [key: string]: string
-    }
-  }
+      [key: string]: string;
+    };
+  };
 }
+
 export const CartCardProducts = ({ data }: CartCardProductsProps) => {
   const { updateQuantity, removeFromCart } = useCart(); // Accede al contexto directamente en el componente
 
@@ -35,7 +36,8 @@ export const CartCardProducts = ({ data }: CartCardProductsProps) => {
       updateQuantity(data.id, (data.quantity || 1) - 1, data.selectedAttributes);
     }
   };
-
+  console.log("CartCardProducts data:", data);
+  
   return (
     <Card className="border-none shadow-none">
       <CardContent className="p-4">
@@ -43,7 +45,7 @@ export const CartCardProducts = ({ data }: CartCardProductsProps) => {
           {/* Imagen del producto */}
           <div className="relative h-20 w-20 flex-shrink-0 rounded-md overflow-hidden border">
             <Image
-              src={data.imageUrl || "/placeholder.svg"}
+              src={data.imageUrl || "/placeholder.svg"} // Usa la URL de la imagen o un marcador de posición
               alt={data.name}
               width={80}
               height={80}
@@ -65,9 +67,10 @@ export const CartCardProducts = ({ data }: CartCardProductsProps) => {
                 ))}
               </ul>
             )}
-            <div className="mt-1 text-sm font-medium">€{data.price}</div>
-          {/* Controles de cantidad */}
+            <div className="mt-1 text-sm font-medium">${data.price}</div>
           </div>
+
+          {/* Controles de cantidad */}
           <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-4">
             <div className="flex items-center border rounded-md">
               <Button
@@ -101,7 +104,6 @@ export const CartCardProducts = ({ data }: CartCardProductsProps) => {
               </Button>
             </div>
           </div>
-
         </div>
       </CardContent>
       <Separator className="mt-1" />

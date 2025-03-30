@@ -270,7 +270,7 @@ export const CardProducts = ({ product, addToCart, handleAttributeChange, handle
                             // Producto con combinaciones: muestra el precio de la combinación seleccionada
                             <p>Precio: {selectedPrice}</p>
                         ) : (
-                            <p className="text-destructive">No disponible</p>
+                            null // No hay combinación seleccionada
                         )}
                     </div>
 

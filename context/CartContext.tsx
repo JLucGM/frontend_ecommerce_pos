@@ -1,7 +1,7 @@
 "use client";
 
 import { CartItem } from "@/interfaces/CarItem";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 interface CartContextType {
   cart: CartItem[];
@@ -16,6 +16,20 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
 
+  // Cargar el carrito desde localStorage al montar el componente
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cart");
+    if (storedCart) {
+      setCart(JSON.parse(storedCart));
+    }
+  }, []);
+  
+
+  // Guardar el carrito en localStorage cada vez que cambie
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
+
   const addToCart = (item: CartItem) => {
     setCart((prevCart) => {
       const existingItemIndex = prevCart.findIndex(
@@ -23,13 +37,13 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
           cartItem.id === item.id &&
           JSON.stringify(cartItem.selectedAttributes) === JSON.stringify(item.selectedAttributes)
       );
-
+  
       if (existingItemIndex !== -1) {
         const updatedCart = [...prevCart];
         updatedCart[existingItemIndex].quantity += item.quantity;
         return updatedCart;
       }
-
+  
       return [...prevCart, item];
     });
   };

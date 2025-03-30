@@ -57,12 +57,12 @@ export default function Store() {
   // Agrega un producto variable al carrito
   const handleAddVariableProduct = (product: any) => {
     const selectedCombination = findSelectedCombination(product);
-
+  
     if (!selectedCombination) {
       alert("Por favor selecciona una combinación válida antes de agregar al carrito.");
       return;
     }
-
+  
     addToCart({
       id: product.id,
       product_name: product.product_name,
@@ -70,8 +70,9 @@ export default function Store() {
       quantity: 1,
       combination_id: selectedCombination.id,
       selectedAttributes: selectedAttributes,
+      // imageUrl: product.media[0]?.original_url || "/placeholder.svg", // Incluye la URL de la imagen
     });
-
+  
     setSelectedAttributes({}); // Limpia los atributos seleccionados
   };
 

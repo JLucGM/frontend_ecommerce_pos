@@ -1,11 +1,12 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ShoppingBag } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { CartCardProducts } from "@/components/cart/cartcardproducts";
+import Link from "next/link";
 
 export default function CartPage() {
   const { cart, removeFromCart, clearCart } = useCart();
@@ -22,7 +23,7 @@ export default function CartPage() {
   const total = subtotal // + taxes; // Si decides usar impuestos, descomenta esta línea
 
   return (
-    <div className="pt-21">
+    <div className="pt-26">
       {cart.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-screen text-center">
           <ShoppingBag className="h-16 w-16 text-gray-500 mb-4" />
@@ -82,7 +83,7 @@ export default function CartPage() {
                     </div>
                   </CardContent>
                   <CardFooter>
-                    <Button className="w-full">Proceder al pago</Button>
+                    <Link href="/checkout" className={buttonVariants({ variant: "default" }) + ' w-full'} >Proceder al pago</Link>
                   </CardFooter>
                 </Card>
               </div>

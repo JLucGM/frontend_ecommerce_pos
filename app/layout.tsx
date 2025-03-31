@@ -64,9 +64,9 @@ export default function RootLayout({
                 </Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Link href="/shop" legacyBehavior passHref>
+                <Link href="/auth/login" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    contacto
+                    Iniciar sesión
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
@@ -91,7 +91,7 @@ export default function RootLayout({
             </NavigationMenuList>
           </NavigationMenu>
         </div>
-        <div className=" p-0">
+        <div className="min-h-screen p-0">
           <CartProvider>
             {children}
           </CartProvider>

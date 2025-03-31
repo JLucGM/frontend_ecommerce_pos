@@ -1,23 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-  NavigationMenuViewport,
-} from "@/components/ui/navigation-menu"
-import Link from "next/link";
-import Image from "next/image";
 import { CartProvider } from "@/context/CartContext";
-import { ShoppingCart } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-
+import { Navbar } from "@/components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,63 +26,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
-      >
-        <div
-          className="fixed top-0 left-0 w-full flex justify-between items-center px-5 py-2 shadow bg-white z-50"
+      <CartProvider>
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased `}
         >
-          <Image
-            src="https://socadocafe.com/wp-content/uploads/2023/10/SOCADO_Imagotipo-01.svg"
-            alt="logo"
-            width={100}
-            height={100}
-          />
-
-          <NavigationMenu className="hidden sm:block">
-            <NavigationMenuList >
-              <NavigationMenuItem>
-                <Link href="/" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Inicio
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link href="/auth/login" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Iniciar sesión
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link href="/cart" legacyBehavior passHref>
-                  <NavigationMenuLink className={`${navigationMenuTriggerStyle()} `}>
-                    <div className="relative">
-
-                      <Badge
-                        className="absolute -top-2 -right-2 translate-x-1/2 -translate-y-1/2 bg-white"
-                        variant="outline">
-                        5
-                      </Badge>
-
-                      <ShoppingCart className="size-5 text-black" />
-                    </div>
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-
-
-            </NavigationMenuList>
-          </NavigationMenu>
-        </div>
-        <div className="min-h-screen p-0">
-          <CartProvider>
+          <Navbar />
+          
+          <div className="min-h-screen p-0">
             {children}
-          </CartProvider>
 
-        </div>
-      </body>
+          </div>
+        </body>
+      </CartProvider>
     </html>
   );
 }

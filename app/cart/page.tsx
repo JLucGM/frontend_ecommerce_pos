@@ -79,7 +79,7 @@ export default function CartPage() {
                     <Separator />
                     <div className="flex justify-between font-medium">
                       <span>Total</span>
-                      <span>€{total.toFixed(2)}</span> {/* Muestra el total dinámico */}
+                      <span>${total.toFixed(2)}</span> {/* Muestra el total dinámico */}
                     </div>
                   </CardContent>
                   <CardFooter>

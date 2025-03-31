@@ -1,7 +1,11 @@
 "use client";
 
+import { CartCardProducts } from "@/components/cart/cartcardproducts";
+import { useCart } from "@/context/CartContext";
+
 
 export default function CartPage() {
+  const { cart, removeFromCart, clearCart } = useCart();
 
   return (
     <div className="pt-26">
@@ -10,18 +14,20 @@ export default function CartPage() {
           <div className="-mx-3 md:flex items-start">
             <div className="px-3 md:w-7/12 lg:pr-10">
               <div className="w-full mx-auto text-gray-800 font-light mb-6 border-b border-gray-200 pb-6">
-                <div className="w-full flex items-center">
-                  <div className="overflow-hidden rounded-lg w-16 h-16 bg-gray-50 border border-gray-200">
-                    <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1160&q=80" alt="" />
-                  </div>
-                  <div className="flex-grow pl-3">
-                    <h6 className="font-semibold uppercase text-gray-600">Ray Ban Sunglasses.</h6>
-                    <p className="text-gray-400">x 1</p>
-                  </div>
-                  <div>
-                    <span className="font-semibold text-gray-600 text-xl">$210</span><span className="font-semibold text-gray-600 text-sm">.00</span>
-                  </div>
-                </div>
+                {cart.map((item) => (
+                                  <CartCardProducts
+                                    key={`${item.id}-${JSON.stringify(item.selectedAttributes || {})}`}
+                                    data={{
+                                      id: item.id,
+                                      name: item.product_name,
+                                      price: item.product_price,
+                                      quantity: item.quantity,
+                                      selectedAttributes: item.selectedAttributes,
+                                      removeFromCart: () => removeFromCart(item.id),
+                                      imageUrl: item.imageUrl, // Asegúrate de que `imageUrl` esté disponible
+                                    }}
+                                  />
+                                ))}
               </div>
               {/* <div className="mb-6 pb-6 border-b border-gray-200">
                   <div className="-mx-2 flex items-end justify-end">

@@ -8,44 +8,36 @@ const SECRET_KEY = process.env.SECRET_KEY || '16a91c59880c0387284be7beff8014c7ba
 
 export const login = async (email: string, password: string) => {
     try {
-        // Realiza la solicitud de inicio de sesión
-        const response = await axios.post(`${API_URL}login`, { email, password });
-        // console.log('Respuesta de la API:', response);
-
-        if (response.data && response.data.token) {
-            // Aquí se asume que la API devuelve un token
-            const token = response.data.token; // Usa el token devuelto por la API
-            // console.log('Token:', token);
-            // Generar un nuevo token JWT (si es necesario)
-            const jwtToken = jwt.sign(
-                { email }, // Solo incluye el email en el payload
-                SECRET_KEY,
-                { expiresIn: 60 * 60 * 24 * 30 } // Establece la duración del token
-            );
-
-            // Serializar el token para almacenarlo en una cookie
-            const serialized = serialize('myToken', jwtToken, {
-                httpOnly: false,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
-                path: '/',
-                maxAge: 60 * 60 * 24 * 30, // 30 días de expiración
-            });
-
-            // Almacenar el token en una cookie
-            const test = document.cookie = serialized; // Establecer la cookie correctamente
-            // console.log(test);
-            // console.log('Login successful, token stored in cookie:', jwtToken);
-            
-            return response.data; // Retornar la respuesta completa si es necesario
-        } else {
-            throw new Error('No se recibió un token de autenticación.');
-        }
+      const response = await axios.post(`${API_URL}login`, { email, password });
+  
+      if (response.data && response.data.token) {
+        const { email, name } = response.data.user;
+  
+        // Generar un token JWT con el nombre y el email
+        const jwtToken = jwt.sign(
+          { email, name }, // Incluye el nombre y el email en el payload
+          SECRET_KEY,
+          { expiresIn: 60 * 60 * 24 * 30 } // 30 días de expiración
+        );
+  
+        // Guardar el token en una cookie
+        document.cookie = serialize('myToken', jwtToken, {
+          httpOnly: false,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'strict',
+          path: '/',
+          maxAge: 60 * 60 * 24 * 30, // 30 días
+        });
+  
+        return response.data; // Retorna la respuesta completa
+      } else {
+        throw new Error('No se recibió un token de autenticación.');
+      }
     } catch (error) {
-        console.error('Error during login:', error);
-        throw error;
+      console.error('Error during login:', error);
+      throw error;
     }
-};
+  };
 
 export const getProfile = async (token: string) => {
     // console.log('Token:', token);

@@ -4,8 +4,10 @@ import * as React from "react"
 import { logout as serviceLogout } from "@/service/auth" // Renombramos para evitar confusión
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/AuthContext" // Importa el contexto de autenticación
+import { Button } from "../ui/button"
 
-export function ModeLogout() {
+
+export function ModeLogout({className}: any) {
     const router = useRouter()
     const { logout: contextLogout } = useAuth() // Obtén la función `logout` del contexto
 
@@ -24,8 +26,8 @@ export function ModeLogout() {
     }
 
     return (
-        <button  onClick={handleLogout}>
+        <Button className={` ${className}`} variant={'link'} onClick={handleLogout}>
             Cerrar sesión
-        </button>
+        </Button>
     )
 }

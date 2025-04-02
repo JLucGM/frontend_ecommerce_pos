@@ -47,11 +47,22 @@ export const Navbar = () => {
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   {isAuthenticated ? (
-                    <ModeLogout />
+                    <ModeLogout className={navigationMenuTriggerStyle()} />
                   ) : (
                     <Link href="/auth/login" legacyBehavior passHref>
                       <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                         Iniciar sesión
+                      </NavigationMenuLink>
+                    </Link>
+                  )}
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  {isAuthenticated ? (
+                    null
+                  ) : (
+                    <Link href="/auth/register" legacyBehavior passHref>
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        Registro
                       </NavigationMenuLink>
                     </Link>
                   )}

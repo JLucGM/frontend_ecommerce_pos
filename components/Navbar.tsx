@@ -15,12 +15,15 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { CartSheet } from "@/components/cart/cart-sheet";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import { ModeLogout } from "./auth/ModeLogout";
 
 export const Navbar = () => {
     const { cart } = useCart();
+    const { isAuthenticated, logout } = useAuth(); // Obtén el estado de autenticación y la función de logout
 
-  // Calcula el total de productos en el carrito
-  const totalProducts = cart.reduce((total, item) => total + item.quantity, 0);
+    // Calcula el total de productos en el carrito
+    const totalProducts = cart.reduce((total, item) => total + item.quantity, 0);
 
     return (
         <div
@@ -43,11 +46,15 @@ export const Navbar = () => {
                   </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Link href="/auth/login" legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      Iniciar sesión
-                    </NavigationMenuLink>
-                  </Link>
+                  {isAuthenticated ? (
+                    <ModeLogout />
+                  ) : (
+                    <Link href="/auth/login" legacyBehavior passHref>
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        Iniciar sesión
+                      </NavigationMenuLink>
+                    </Link>
+                  )}
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>

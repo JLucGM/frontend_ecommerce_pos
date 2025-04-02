@@ -1,20 +1,61 @@
+"use client"
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import Link from "next/link"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { loginSchema } from "@/lib/zod"
+import { login } from "@/service/auth"
+import { useAuth } from "@/context/AuthContext"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+
+interface LoginFormProps extends React.ComponentPropsWithoutRef<"div"> {
+  redirectTo?: string; // Prop opcional para definir la ruta de redirección
+  onLoginSuccess?: () => void; // Nuevo prop opcional
+}
 
 export function LoginForm({
   className,
+  redirectTo = "/", // Valor predeterminado: "/"
+  onLoginSuccess,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+}: LoginFormProps) {
+  const [error, setError] = useState("")
+  const router = useRouter()
+  const { login: setAuthenticated } = useAuth()
+
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  })
+
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+    setError("")
+
+    try {
+      const data = await login(values.email, values.password)
+      if (data.token) {
+        localStorage.setItem("token", data.token)
+        setAuthenticated()
+        onLoginSuccess?.(); // Llama a la función si está definida
+        router.push(redirectTo) // Usa el prop `redirectTo` para redirigir
+      } else {
+        setError("No se recibió un token de autenticación.")
+      }
+    } catch (err) {
+      setError("Credenciales inválidas")
+      console.error("Error en el login:", err)
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -25,43 +66,50 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
+          <Form {...form}>
+            <form className="p-6 md:p-8" onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="flex flex-col gap-6">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="joedoe@example.com"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="Password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full">
+                  Entrar
+                </Button>
+                {error && <p className="text-red-500">{error}</p>}
               </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
-                <Input id="password" type="password" required />
-              </div>
-              <Button type="submit" className="w-full">
-                Login
-              </Button>
-              {/* <Button variant="outline" className="w-full">
-                Login with Google
-              </Button> */}
-            </div>
-            <div className="mt-4 text-center text-sm">
-            ¿No tienes una cuenta?{" "}
-              <Link href="/auth/register" className="underline underline-offset-4">
-                Registrate
-              </Link>
-            </div>
-          </form>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>

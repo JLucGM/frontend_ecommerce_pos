@@ -69,7 +69,7 @@ export const CartSheet = ({ className }: CartSheetProps) => {
                         <p className="font-bold">total</p>
                         <span>${total.toFixed(2)}</span> {/* Muestra el total dinámico */}
                     </div>
-                    <Link href="/cart" className={buttonVariants({ variant: "default" })}>
+                    <Link href="/checkout" className={buttonVariants({ variant: "default" })}>
                         Verificar pedido
                     </Link>
                 </SheetFooter>

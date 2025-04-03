@@ -17,6 +17,7 @@ interface Props {
         product_name: string;
         product_price: number;
         quantity: number;
+        imageUrl:string;
         selectedAttributes?: { [key: string]: string }; // Agrega esta propiedad opcional
     }) => void;
     handleAttributeChange: (attributeName: string, value: string) => void;
@@ -70,6 +71,7 @@ export const CardProducts = ({ product, addToCart, handleAttributeChange, handle
                 product_name: product.product_name,
                 product_price: parseFloat(product.product_price),
                 quantity: 1,
+                imageUrl: product.media[0]?.original_url,
             });
 
             setAddedToCart(true);
@@ -95,6 +97,7 @@ export const CardProducts = ({ product, addToCart, handleAttributeChange, handle
             product_price: parseFloat(selectedCombination.combination_price),
             quantity: 1,
             selectedAttributes: { ...selectedAttributes },
+            imageUrl: product.media[0]?.original_url,
         });
 
         setAddedToCart(true);

@@ -30,10 +30,10 @@ export default function Store() {
     selectedCategory === "all"
       ? products
       : products.filter((product) =>
-          product.categories.some(
-            (category: any) => category.category_name === selectedCategory
-          )
-        );
+        product.categories.some(
+          (category: any) => category.category_name === selectedCategory
+        )
+      );
 
   // Maneja la selección de atributos
   const handleAttributeChange = (attributeName: string, value: string) => {
@@ -57,12 +57,12 @@ export default function Store() {
   // Agrega un producto variable al carrito
   const handleAddVariableProduct = (product: any) => {
     const selectedCombination = findSelectedCombination(product);
-  
+
     if (!selectedCombination) {
       alert("Por favor selecciona una combinación válida antes de agregar al carrito.");
       return;
     }
-  
+
     addToCart({
       id: product.id,
       product_name: product.product_name,
@@ -70,9 +70,9 @@ export default function Store() {
       quantity: 1,
       combination_id: selectedCombination.id,
       selectedAttributes: selectedAttributes,
-      // imageUrl: product.media[0]?.original_url || "/placeholder.svg", // Incluye la URL de la imagen
+      imageUrl: product.media?.[0]?.original_url || "/placeholder.svg", // Asegúrate de que la imagen esté presente
     });
-  
+
     setSelectedAttributes({}); // Limpia los atributos seleccionados
   };
 

@@ -44,7 +44,7 @@ export const SheetCardProducts = ({ data }: CartCardProductsProps) => {
         <div className="flex items-center gap-2">
           {/* Imagen del producto */}
           <div className="relative h-20 w-20 flex-shrink-0 rounded-md overflow-hidden border">
-            <Image
+            <img
               src={data.imageUrl || "/placeholder.svg"} // Usa la URL de la imagen o un marcador de posición
               alt={data.name}
               width={80}

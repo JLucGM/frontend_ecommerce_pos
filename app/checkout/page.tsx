@@ -11,6 +11,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Title } from "@/components/title";
 
 export default function CartPage() {
   const { cart, removeFromCart, clearCart } = useCart();
@@ -38,7 +39,8 @@ export default function CartPage() {
 
     getPaymentMethods();
   }, []);
-
+console.log(user, 'user')
+  console.log(isAuthenticated, 'isAuthenticated')
   return (
     <div className="pt-26">
       <div className="w-full max-w-3xl mx-auto">
@@ -105,19 +107,14 @@ export default function CartPage() {
                   {isAuthenticated ? (
                     <div className="">
                       <h3 className="text-lg font-semibold mb-4">Cuenta</h3>
-
+                      <p>{user?.id}</p>
                       <p>{user?.name}</p>
                       <p>{user?.email}</p>
                     </div>
                   ) : (
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                       <DialogTrigger className={buttonVariants({ variant: "default" }) + ' w-full'}>
-                        {/* <button
-                        className="text-indigo-500 underline"
-                        onClick={() => setIsDialogOpen(true)}
-                      > */}
                         Iniciar sesión
-                        {/* </button> */}
                       </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
@@ -197,8 +194,10 @@ export default function CartPage() {
             </div>
           ) : (
             <div className="text-center text-gray-500">
-              <p className="text-xl font-semibold">Tu carrito está vacío</p>
-              <p className="text-md">Agrega productos para continuar con tu compra.</p>
+              <Title 
+                title="Tu carrito está vacío"
+                subtitle="Agrega productos para continuar con tu compra."
+              />
             </div>
           )}
         </div>

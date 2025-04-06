@@ -9,13 +9,13 @@ const SECRET_KEY = process.env.SECRET_KEY || '16a91c59880c0387284be7beff8014c7ba
 export const login = async (email: string, password: string) => {
     try {
       const response = await axios.post(`${API_URL}login`, { email, password });
-  
+  console.log('Response:', response.data); // Agregado para depuración
       if (response.data && response.data.token) {
-        const { email, name } = response.data.user;
+        const { id, email, name } = response.data.user;
   
         // Generar un token JWT con el nombre y el email
         const jwtToken = jwt.sign(
-          { email, name }, // Incluye el nombre y el email en el payload
+          { id, email, name }, // Incluye el nombre y el email en el payload
           SECRET_KEY,
           { expiresIn: 60 * 60 * 24 * 30 } // 30 días de expiración
         );

@@ -5,15 +5,15 @@ import jwt from 'jsonwebtoken';
 
 const AuthContext = createContext<{
   isAuthenticated: boolean;
-  user: { email: string; name: string } | null;
+  user: { id: number; email: string; name: string } | null;
   login: () => void;
   logout: () => void;
-  setUser: (user: { email: string; name: string }) => void; // Nueva función para actualizar el usuario
+  setUser: (user: { id: number; email: string; name: string }) => void; // Nueva función para actualizar el usuario
 } | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<{ email: string; name: string } | null>(null);
+  const [user, setUser] = useState<{ id: number; email: string; name: string } | null>(null);
 
   useEffect(() => {
     const token = document.cookie
@@ -23,9 +23,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (token) {
       try {
-        const decoded = jwt.decode(token) as { email: string; name: string };
-        setUser(decoded); // Guarda el nombre y el email en el estado
-        setIsAuthenticated(true);
+        const decoded = jwt.decode(token);
+        console.log('Decoded token:', decoded); // Imprime el contenido del token
+
+        if (decoded && typeof decoded === 'object') {
+          // Asegúrate de que estás accediendo a las propiedades correctas
+          const { id, email, name } = decoded as { id: number; email: string; name: string };
+          setUser({ id, email, name }); // Convierte el id a string si es necesario
+          setIsAuthenticated(true);
+        }
       } catch (error) {
         console.error('Error decoding token:', error);
       }

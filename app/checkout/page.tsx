@@ -12,6 +12,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Title } from "@/components/title";
+import { createOrder } from "@/api/createOrder";
 
 export default function CartPage() {
   const { cart, removeFromCart, clearCart } = useCart();
@@ -39,8 +40,45 @@ export default function CartPage() {
 
     getPaymentMethods();
   }, []);
-console.log(user, 'user')
-  console.log(isAuthenticated, 'isAuthenticated')
+
+  const handleCreateOrder = async () => {
+    if (!isAuthenticated) {
+      alert("Por favor, inicia sesión para continuar.");
+      return;
+    }
+  
+    if (!selectedMethod) {
+      alert("Por favor, selecciona un método de pago.");
+      return;
+    }
+  
+    const orderData = {
+      user_id: user?.id, // ID del usuario autenticado
+      payments_method_id: selectedMethod, // Método de pago seleccionado
+      totaldiscounts: "0", // Puedes calcular descuentos si es necesario
+      subtotal: subtotal.toFixed(2), // Subtotal calculado
+      total: total.toFixed(2), // Total calculado
+      direction_delivery: (document.getElementById("direction") as HTMLTextAreaElement)?.value || null,      
+      order_origin: "Ecommerce", // Origen de la orden
+      items: cart.map((item) => ({
+        product_id: item.id,
+        quantity: item.quantity.toString(),
+        combination_id: item.selectedAttributes?.combination_id || null,
+        price: item.product_price.toFixed(2),
+        details: item.selectedAttributes || null,
+      })),
+    };
+  
+    try {
+      const response = await createOrder(orderData);
+      alert("Orden creada con éxito.");
+      clearCart(); // Limpia el carrito después de crear la orden
+    } catch (error) {
+      console.error("Error al crear la orden:", error);
+      alert("Hubo un error al crear la orden. Por favor, inténtalo de nuevo.");
+    }
+  };
+
   return (
     <div className="pt-26">
       <div className="w-full max-w-3xl mx-auto">
@@ -96,6 +134,7 @@ console.log(user, 'user')
                   <div className="">
                     <Button
                       className="w-full"
+                      onClick={handleCreateOrder}
                     >
                       Finalizar el pedido
                     </Button>

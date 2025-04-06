@@ -29,38 +29,47 @@ export const CartSheet = ({ className }: CartSheetProps) => {
                         Make changes to your profile here. Click save when you're done.
                     </SheetDescription> */}
                 </SheetHeader>
-                <ScrollArea className="max-h-6/10 px-2">
+                {cart.length > 0 ? (
+                    <>
+                        <ScrollArea className="max-h-6/10 px-2">
+                            <div className="space-y-4">
+                                {cart.map((item) => (
+                                    <SheetCardProducts
+                                        key={`${item.id}-${JSON.stringify(item.selectedAttributes || {})}`}
+                                        data={{
+                                            id: item.id,
+                                            name: item.product_name,
+                                            price: item.product_price,
+                                            quantity: item.quantity,
+                                            selectedAttributes: item.selectedAttributes,
+                                            removeFromCart: () => removeFromCart(item.id),
+                                            imageUrl: item.imageUrl, // Asegúrate de que `imageUrl` esté disponible
+                                        }}
+                                    />
+                                ))}
+                            </div>
+                        </ScrollArea>
+                        <SheetFooter className="h-auto z-10">
+                            <div className="flex justify-between items-center">
+                                <p className="font-bold">Subtotal</p>
+                                <span>${subtotal.toFixed(2)}</span> {/* Muestra el subtotal dinámico */}
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <p className="font-bold">Total</p>
+                                <span>${total.toFixed(2)}</span> {/* Muestra el total dinámico */}
+                            </div>
+                            <Link href="/checkout" className={buttonVariants({ variant: "default" })}>
+                                Verificar pedido
+                            </Link>
+                        </SheetFooter>
+                    </>
+                ) : (
+                    <div className="flex justify-center items-center h-full">
+                        <p className="text-gray-500">Tu carrito está vacío</p>
+                    </div>
+                )}
 
-                    <div className="space-y-4">
-                        {cart.map((item) => (
-                            <SheetCardProducts
-                                key={`${item.id}-${JSON.stringify(item.selectedAttributes || {})}`}
-                                data={{
-                                    id: item.id,
-                                    name: item.product_name,
-                                    price: item.product_price,
-                                    quantity: item.quantity,
-                                    selectedAttributes: item.selectedAttributes,
-                                    removeFromCart: () => removeFromCart(item.id),
-                                    imageUrl: item.imageUrl, // Asegúrate de que `imageUrl` esté disponible
-                                }}
-                            />
-                        ))}
-                    </div>
-                </ScrollArea>
-                <SheetFooter className="h-auto z-10">
-                    <div className="flex justify-between items-center">
-                        <p className="font-bold">Subtotal</p>
-                        <span>${subtotal.toFixed(2)}</span> {/* Muestra el subtotal dinámico */}
-                    </div>
-                    <div className="flex justify-between items-center">
-                        <p className="font-bold">Total</p>
-                        <span>${total.toFixed(2)}</span> {/* Muestra el total dinámico */}
-                    </div>
-                    <Link href="/checkout" className={buttonVariants({ variant: "default" })}>
-                        Verificar pedido
-                    </Link>
-                </SheetFooter>
+
             </SheetContent>
         </Sheet>
     );

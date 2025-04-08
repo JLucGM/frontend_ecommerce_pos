@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogOverlay, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger, } from "@/components/ui/accordion"
@@ -9,26 +9,20 @@ import { useEffect, useState } from "react";
 import { TextInnerHtml } from "../ui/text-inner-html";
 import { ScrollArea } from "../ui/scroll-area";
 import { AspectRatio } from "../ui/aspect-ratio";
+import { CartItem } from "@/interfaces/CarItem";
 
 interface Props {
     product: Product;
-    addToCart: (item: {
-        id: number;
-        product_name: string;
-        product_price: number;
-        quantity: number;
-        imageUrl:string;
-        selectedAttributes?: { [key: string]: string }; // Agrega esta propiedad opcional
-    }) => void;
+    addToCart: (item: CartItem) => void;
     handleAttributeChange: (attributeName: string, value: string) => void;
-    handleAddVariableProduct: (product: Product) => void;
     selectedAttributes: { [key: string]: string };
 }
 
-export const CardProducts = ({ product, addToCart, handleAttributeChange, handleAddVariableProduct, selectedAttributes }: Props) => {
+export const CardProducts = ({ product, addToCart, handleAttributeChange, selectedAttributes }: Props) => {
     const [displayImage, setDisplayImage] = useState(product.media[0]?.original_url);
     const [addedToCart, setAddedToCart] = useState(false);
     const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const getPriceRange = () => {
         if (product.combinations.length > 0) {
@@ -64,8 +58,43 @@ export const CardProducts = ({ product, addToCart, handleAttributeChange, handle
     }, [selectedAttributes, product.combinations]);
 
     const handleAddToCart = () => {
-        if (product.combinations.length === 0) {
-            // Si el producto no tiene combinaciones, agrégalo directamente al carrito
+        const selectedCombination = findSelectedCombination();
+        // console.log("Selected Combination:", selectedCombination);
+
+        if (product.combinations.length > 0) {
+            if (!selectedCombination) {
+                setErrorMessage("Por favor selecciona una combinación válida antes de agregar al carrito.");
+                return;
+            }
+
+            // console.log("Adding combination to cart:", {
+            //     id: product.id,
+            //     product_name: product.product_name,
+            //     product_price: parseFloat(selectedCombination.combination_price),
+            //     quantity: 1,
+            //     combination_id: selectedCombination.id,
+            //     selectedAttributes: { ...selectedAttributes },
+            //     imageUrl: product.media[0]?.original_url,
+            // });
+
+            addToCart({
+                id: product.id,
+                product_name: product.product_name,
+                product_price: parseFloat(selectedCombination.combination_price),
+                quantity: 1,
+                combination_id: selectedCombination.id,
+                selectedAttributes: { ...selectedAttributes },
+                imageUrl: product.media[0]?.original_url,
+            });
+        } else {
+            // console.log("Adding simple product to cart:", {
+            //     id: product.id,
+            //     product_name: product.product_name,
+            //     product_price: parseFloat(product.product_price),
+            //     quantity: 1,
+            //     imageUrl: product.media[0]?.original_url,
+            // });
+
             addToCart({
                 id: product.id,
                 product_name: product.product_name,
@@ -73,32 +102,7 @@ export const CardProducts = ({ product, addToCart, handleAttributeChange, handle
                 quantity: 1,
                 imageUrl: product.media[0]?.original_url,
             });
-
-            setAddedToCart(true);
-
-            setTimeout(() => {
-                setAddedToCart(false);
-            }, 2000);
-
-            return;
         }
-
-        // Si el producto tiene combinaciones, verifica que se haya seleccionado una combinación válida
-        const selectedCombination = findSelectedCombination();
-
-        if (!selectedCombination) {
-            alert("Por favor selecciona una combinación válida antes de agregar al carrito.");
-            return;
-        }
-
-        addToCart({
-            id: product.id,
-            product_name: product.product_name,
-            product_price: parseFloat(selectedCombination.combination_price),
-            quantity: 1,
-            selectedAttributes: { ...selectedAttributes },
-            imageUrl: product.media[0]?.original_url,
-        });
 
         setAddedToCart(true);
 

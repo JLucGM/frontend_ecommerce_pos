@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Title } from "@/components/title";
 import { createOrder } from "@/api/createOrder";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
   const { cart, removeFromCart, clearCart } = useCart();
@@ -20,6 +21,7 @@ export default function CartPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false); // Estado para controlar el Dialog
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [selectedMethod, setSelectedMethod] = useState<number | null>(null); // Estado para el método seleccionado
+  const router = useRouter(); // Obtén el router
 
   const subtotal = cart.reduce((total, item) => total + item.product_price * item.quantity, 0);
   const total = subtotal // + taxes; // Si decides usar impuestos, descomenta esta línea
@@ -46,33 +48,35 @@ export default function CartPage() {
       alert("Por favor, inicia sesión para continuar.");
       return;
     }
-  
+
     if (!selectedMethod) {
       alert("Por favor, selecciona un método de pago.");
       return;
     }
-  
+
     const orderData = {
-      user_id: user?.id, // ID del usuario autenticado
-      payments_method_id: selectedMethod, // Método de pago seleccionado
-      totaldiscounts: "0", // Puedes calcular descuentos si es necesario
-      subtotal: subtotal.toFixed(2), // Subtotal calculado
-      total: total.toFixed(2), // Total calculado
-      direction_delivery: (document.getElementById("direction") as HTMLTextAreaElement)?.value || null,      
-      order_origin: "Ecommerce", // Origen de la orden
+      user_id: user?.id,
+      payments_method_id: selectedMethod,
+      totaldiscounts: "0",
+      subtotal: subtotal.toFixed(2),
+      total: total.toFixed(2),
+      direction_delivery: (document.getElementById("direction") as HTMLTextAreaElement)?.value || null,
+      order_origin: "Ecommerce",
       items: cart.map((item) => ({
         product_id: item.id,
         quantity: item.quantity.toString(),
-        combination_id: item.selectedAttributes?.combination_id || null,
+        combination_id: item.combination_id || null, // Asegúrate de que esto esté correcto
         price: item.product_price.toFixed(2),
         details: item.selectedAttributes || null,
       })),
     };
-  
+
     try {
       const response = await createOrder(orderData);
       alert("Orden creada con éxito.");
       clearCart(); // Limpia el carrito después de crear la orden
+
+      router.push('/'); // Redirige a la página de finalización o a donde desees
     } catch (error) {
       console.error("Error al crear la orden:", error);
       alert("Hubo un error al crear la orden. Por favor, inténtalo de nuevo.");
@@ -145,8 +149,8 @@ export default function CartPage() {
                 <div className="w-full mx-auto rounded-lg bg-white border border-gray-200 p-3 text-gray-800 font-light mb-6">
                   {isAuthenticated ? (
                     <div className="">
-                      <h3 className="text-lg font-semibold mb-4">Cuenta</h3>
-                      <p>{user?.id}</p>
+                      <h3 className="text-lg font-semibold mb-4">Datos del cliente</h3>
+                      {/* <p>{user?.id}</p> */}
                       <p>{user?.name}</p>
                       <p>{user?.email}</p>
                     </div>
@@ -233,7 +237,7 @@ export default function CartPage() {
             </div>
           ) : (
             <div className="text-center text-gray-500">
-              <Title 
+              <Title
                 title="Tu carrito está vacío"
                 subtitle="Agrega productos para continuar con tu compra."
               />

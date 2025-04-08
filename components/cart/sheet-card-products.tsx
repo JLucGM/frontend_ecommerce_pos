@@ -36,7 +36,7 @@ export const SheetCardProducts = ({ data }: CartCardProductsProps) => {
       updateQuantity(data.id, (data.quantity || 1) - 1, data.selectedAttributes);
     }
   };
-  console.log("CartCardProducts data:", data);
+  // console.log("CartCardProducts data:", data);
   
   return (
     <Card className="border-none shadow-none">

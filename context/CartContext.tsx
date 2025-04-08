@@ -15,7 +15,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
-console.log(cart)
+  console.log(cart)
   // Cargar el carrito desde localStorage al montar el componente
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
@@ -37,7 +37,8 @@ console.log(cart)
       const existingItemIndex = prevCart.findIndex(
         (cartItem) =>
           cartItem.id === item.id &&
-          JSON.stringify(cartItem.selectedAttributes) === JSON.stringify(item.selectedAttributes)
+          JSON.stringify(cartItem.selectedAttributes) === JSON.stringify(item.selectedAttributes) &&
+          cartItem.combination_id === item.combination_id // Asegúrate de comparar también combination_id
       );
 
       if (existingItemIndex !== -1) {

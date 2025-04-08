@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (token) {
       try {
         const decoded = jwt.decode(token);
-        console.log('Decoded token:', decoded); // Imprime el contenido del token
+        // console.log('Decoded token:', decoded); // Imprime el contenido del token
 
         if (decoded && typeof decoded === 'object') {
           // Asegúrate de que estás accediendo a las propiedades correctas

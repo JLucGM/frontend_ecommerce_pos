@@ -43,39 +43,6 @@ export default function Store() {
     }));
   };
 
-  // Encuentra la combinación seleccionada basada en los atributos
-  const findSelectedCombination = (product: any) => {
-    return product.combinations.find((combination: any) =>
-      combination.combination_attribute_value.every(
-        (attr: any) =>
-          selectedAttributes[attr.attribute_value.attribute.attribute_name] ===
-          attr.attribute_value.attribute_value_name
-      )
-    );
-  };
-
-  // Agrega un producto variable al carrito
-  const handleAddVariableProduct = (product: any) => {
-    const selectedCombination = findSelectedCombination(product);
-
-    if (!selectedCombination) {
-      alert("Por favor selecciona una combinación válida antes de agregar al carrito.");
-      return;
-    }
-
-    addToCart({
-      id: product.id,
-      product_name: product.product_name,
-      product_price: parseFloat(selectedCombination.combination_price),
-      quantity: 1,
-      combination_id: selectedCombination.id,
-      selectedAttributes: selectedAttributes,
-      imageUrl: product.media?.[0]?.original_url || "/placeholder.svg", // Asegúrate de que la imagen esté presente
-    });
-
-    setSelectedAttributes({}); // Limpia los atributos seleccionados
-  };
-
   return (
     <div className="pt-21 mx-5 w-auto">
       {loading ? (
@@ -108,7 +75,6 @@ export default function Store() {
                   key={product.id}
                   product={product}
                   addToCart={addToCart}
-                  handleAddVariableProduct={handleAddVariableProduct}
                   handleAttributeChange={handleAttributeChange}
                   selectedAttributes={selectedAttributes}
                 />

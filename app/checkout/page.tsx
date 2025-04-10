@@ -73,10 +73,10 @@ export default function CartPage() {
 
     try {
       const response = await createOrder(orderData);
-      alert("Orden creada con éxito.");
+      // alert("Orden creada con éxito.");
+      router.push(`/checkout/${response.id}/finish`); // Redirige a la página de finalización o a donde desees
       clearCart(); // Limpia el carrito después de crear la orden
 
-      router.push('/'); // Redirige a la página de finalización o a donde desees
     } catch (error) {
       console.error("Error al crear la orden:", error);
       alert("Hubo un error al crear la orden. Por favor, inténtalo de nuevo.");

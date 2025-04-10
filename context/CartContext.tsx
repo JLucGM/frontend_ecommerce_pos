@@ -15,7 +15,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
-  console.log(cart)
+  // console.log(cart)
   // Cargar el carrito desde localStorage al montar el componente
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
@@ -27,12 +27,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Guardar el carrito en localStorage cada vez que cambie
   useEffect(() => {
-    console.log("Carrito actualizado:", cart); // Depuración
+    // console.log("Carrito actualizado:", cart); // Depuración
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
   const addToCart = (item: CartItem) => {
-    console.log("Producto agregado al carrito:", item); // Depuración
+    // console.log("Producto agregado al carrito:", item); // Depuración
     setCart((prevCart) => {
       const existingItemIndex = prevCart.findIndex(
         (cartItem) =>

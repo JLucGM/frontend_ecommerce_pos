@@ -5,6 +5,7 @@ import { logout as serviceLogout } from "@/service/auth" // Renombramos para evi
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/AuthContext" // Importa el contexto de autenticación
 import { Button } from "../ui/button"
+import { LogOut } from "lucide-react"
 
 
 export function ModeLogout({className}: any) {

@@ -1,5 +1,6 @@
 "use client";
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger, } from "@/components/ui/sheet"
+import { useState } from "react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from "@/components/ui/sheet";
 import { useCart } from "@/context/CartContext";
 import { ShoppingCart } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
@@ -13,21 +14,24 @@ interface CartSheetProps {
 
 export const CartSheet = ({ className }: CartSheetProps) => {
     const { cart, removeFromCart, clearCart } = useCart();
+    const [isOpen, setIsOpen] = useState(false); // Estado para controlar la apertura del Sheet
 
     const subtotal = cart.reduce((total, item) => total + item.product_price * item.quantity, 0);
-    const total = subtotal // + taxes; // Si decides usar impuestos, descomenta esta línea
+    const total = subtotal; // + taxes; // Si decides usar impuestos, descomenta esta línea
+
+    const handleCheckout = () => {
+        // Aquí puedes agregar cualquier lógica adicional que necesites antes de cerrar el Sheet
+        setIsOpen(false); // Cierra el Sheet
+    };
 
     return (
-        <Sheet>
+        <Sheet open={isOpen} onOpenChange={setIsOpen}> {/* Controla la apertura del Sheet */}
             <SheetTrigger>
                 <ShoppingCart className="size-5 text-black" />
             </SheetTrigger>
             <SheetContent className="w-full sm:w-[600px] p-0">
-                <SheetHeader >
+                <SheetHeader>
                     <SheetTitle className="text-2xl">Tu carrito</SheetTitle>
-                    {/* <SheetDescription>
-                        Make changes to your profile here. Click save when you're done.
-                    </SheetDescription> */}
                 </SheetHeader>
                 {cart.length > 0 ? (
                     <>
@@ -52,13 +56,13 @@ export const CartSheet = ({ className }: CartSheetProps) => {
                         <SheetFooter className="h-auto z-10">
                             <div className="flex justify-between items-center">
                                 <p className="font-bold">Subtotal</p>
-                                <span>${subtotal.toFixed(2)}</span> {/* Muestra el subtotal dinámico */}
+                                <span>${subtotal.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <p className="font-bold">Total</p>
-                                <span>${total.toFixed(2)}</span> {/* Muestra el total dinámico */}
+                                <span>${total.toFixed(2)}</span>
                             </div>
-                            <Link href="/checkout" className={buttonVariants({ variant: "default" })}>
+                            <Link href="/checkout" className={buttonVariants({ variant: "default" })} onClick={handleCheckout}>
                                 Verificar pedido
                             </Link>
                         </SheetFooter>
@@ -68,8 +72,6 @@ export const CartSheet = ({ className }: CartSheetProps) => {
                         <p className="text-gray-500">Tu carrito está vacío</p>
                     </div>
                 )}
-
-
             </SheetContent>
         </Sheet>
     );

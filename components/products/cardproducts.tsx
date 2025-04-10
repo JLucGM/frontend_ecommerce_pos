@@ -125,7 +125,7 @@ export const CardProducts = ({ product, addToCart, handleAttributeChange, select
     return (
         <Dialog>
             <DialogTrigger className="p-0 bg-transparent hover:bg-gray-100">
-                <Card className="p-0 cursor-pointer h-full">
+                <Card className="p-0 cursor-pointer h-full shadow">
                     <CardHeader className="p-0 h-auto">
                         <AspectRatio ratio={1 / 1}>
                             <img

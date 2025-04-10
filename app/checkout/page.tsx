@@ -90,7 +90,7 @@ export default function CartPage() {
           {cart.length > 0 ? (
 
             <div className="-mx-3 md:flex items-start">
-              <div className="px-3 md:w-7/12 lg:pr-10">
+              <div className="px-3 md:w-7/12 lg:pr-10 rounded-lg border">
                 <div className="w-full mx-auto text-gray-800 font-light mb-6 border-b border-gray-200 pb-6">
                   {cart.map((item) => (
                     <CartCardProducts
@@ -107,7 +107,7 @@ export default function CartPage() {
                     />
                   ))}
                 </div>
-                <div className="mb-6 pb-6 border-b border-gray-200 text-gray-800">
+                <div className="mb-6 pb-6 border-gray-200 text-gray-800">
                   <div className="w-full flex mb-3 items-center">
                     <div className="flex-grow">
                       <span className="text-gray-600">Subtotal</span>
@@ -135,14 +135,22 @@ export default function CartPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="">
-                    <Button
-                      className="w-full"
-                      onClick={handleCreateOrder}
-                    >
-                      Finalizar el pedido
-                    </Button>
-                  </div>
+                  {isAuthenticated ? (
+                    <div className="">
+                      <Button
+                        className="w-full"
+                        onClick={handleCreateOrder}
+                      >
+                        Finalizar el pedido
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="">
+                      <p>
+                        Inicie sesión para finalizar el pedido.
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="px-3 md:w-5/12">

@@ -17,8 +17,10 @@ export const createOrder = async (orderData: any) => {
       });
   
       if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error al crear la orden:', errorData);
         throw new Error(`Error al crear la orden: ${response.statusText}`);
-      }
+    }
   
       const data = await response.json();
       console.log('Orden creada:', data); // Muestra la respuesta en la consola

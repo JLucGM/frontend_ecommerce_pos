@@ -7,6 +7,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import { buttonVariants } from "../ui/button";
 import { SheetCardProducts } from "./sheet-card-products";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
 interface CartSheetProps {
     className?: string;
@@ -23,7 +24,10 @@ export const CartSheet = ({ className }: CartSheetProps) => {
         // Aquí puedes agregar cualquier lógica adicional que necesites antes de cerrar el Sheet
         setIsOpen(false); // Cierra el Sheet
     };
+    const { slug } = useParams(); // Obtén el slug de la URL
+    const validSlug = typeof slug === "string" ? slug : "";
 
+    // console.log('cartsheetslug',validSlug)
     return (
         <Sheet open={isOpen} onOpenChange={setIsOpen}> {/* Controla la apertura del Sheet */}
             <SheetTrigger>
@@ -61,8 +65,8 @@ export const CartSheet = ({ className }: CartSheetProps) => {
                             <div className="flex justify-between items-center">
                                 <p className="font-bold">Total</p>
                                 <span>${total.toFixed(2)}</span>
-                            </div>
-                            <Link href="/checkout" className={buttonVariants({ variant: "default" })} onClick={handleCheckout}>
+                            </div> 
+                            <Link href={`/store/${slug}/checkout`} className={buttonVariants({ variant: "default" })} onClick={handleCheckout}>
                                 Verificar pedido
                             </Link>
                         </SheetFooter>

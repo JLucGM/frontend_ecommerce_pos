@@ -13,7 +13,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Title } from "@/components/title";
 import { createOrder } from "@/api/createOrder";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { fetchStoreSlug } from "@/api/fetchStore";
 
 export default function CartPage() {
   const { cart, removeFromCart, clearCart } = useCart();
@@ -21,7 +22,12 @@ export default function CartPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false); // Estado para controlar el Dialog
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [selectedMethod, setSelectedMethod] = useState<number | null>(null); // Estado para el método seleccionado
+  const [storeId, setStoreId] = useState<number | null>(null); // Estado para el ID del store
   const router = useRouter(); // Obtén el router
+  const { slug } = useParams(); // Obtén el slug de la URL
+  const validSlug = typeof slug === "string" ? slug : "";
+
+    // console.log('cartslug',validSlug)
 
   const subtotal = cart.reduce((total, item) => total + item.product_price * item.quantity, 0);
   const total = subtotal // + taxes; // Si decides usar impuestos, descomenta esta línea
@@ -29,6 +35,26 @@ export default function CartPage() {
   const handleLoginSuccess = () => {
     setIsDialogOpen(false); // Cierra el Dialog después del login exitoso
   };
+
+  useEffect(() => {
+    const getStoreData = async () => {
+      try {
+        const storeData = await fetchStoreSlug(validSlug);
+        console.log('Datos del store:', storeData); // Verifica los datos del store
+        if (storeData.length > 0) {
+          setStoreId(storeData[0].id); // Accede al primer elemento del array
+        } else {
+          console.error("No se encontraron datos para el store.");
+        }
+      } catch (error) {
+        console.error("Error al obtener los datos del store:", error);
+      }
+    };
+  
+    if (validSlug) {
+      getStoreData();
+    }
+  }, [validSlug]);
 
   useEffect(() => {
     const getPaymentMethods = async () => {
@@ -48,12 +74,17 @@ export default function CartPage() {
       alert("Por favor, inicia sesión para continuar.");
       return;
     }
-
+  
     if (!selectedMethod) {
       alert("Por favor, selecciona un método de pago.");
       return;
     }
-
+  
+    if (storeId === null || storeId === undefined) {
+      alert("El ID de la tienda no está disponible. Por favor, intenta de nuevo.");
+      return;
+    }
+  
     const orderData = {
       user_id: user?.id,
       payments_method_id: selectedMethod,
@@ -62,21 +93,21 @@ export default function CartPage() {
       total: total.toFixed(2),
       direction_delivery: (document.getElementById("direction") as HTMLTextAreaElement)?.value || null,
       order_origin: "Ecommerce",
+      status: "Pendiente",
+      store_id: storeId, // Usa el ID del store obtenido
       items: cart.map((item) => ({
         product_id: item.id,
         quantity: item.quantity.toString(),
-        combination_id: item.combination_id || null, // Asegúrate de que esto esté correcto
+        combination_id: item.combination_id || null,
         price: item.product_price.toFixed(2),
         details: item.selectedAttributes || null,
       })),
     };
-
+  
     try {
       const response = await createOrder(orderData);
-      // alert("Orden creada con éxito.");
-      router.push(`/checkout/${response.id}/finish`); // Redirige a la página de finalización o a donde desees
-      clearCart(); // Limpia el carrito después de crear la orden
-
+      router.push(`/store/${validSlug}/checkout/${response.id}/finish`);
+      clearCart();
     } catch (error) {
       console.error("Error al crear la orden:", error);
       alert("Hubo un error al crear la orden. Por favor, inténtalo de nuevo.");

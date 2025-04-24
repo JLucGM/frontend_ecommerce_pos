@@ -25,7 +25,7 @@ interface CartCardProductsProps {
 }
 
 export const CartCardProducts = ({ data }: CartCardProductsProps) => {
-  const { updateQuantity, removeFromCart } = useCart(); // Accede al contexto directamente en el componente
+  const { updateQuantity, removeFromCart, settings } = useCart(); // Accede al contexto directamente en el componente
 
   const incrementar = () => {
     updateQuantity(data.id, (data.quantity || 1) + 1, data.selectedAttributes);
@@ -67,7 +67,7 @@ export const CartCardProducts = ({ data }: CartCardProductsProps) => {
                 ))}
               </ul>
             )}
-            <div className="mt-1 text-sm font-medium">${data.price}</div>
+            <div className="mt-1 text-sm font-medium">{settings?.default_currency} {data.price}</div>
           </div>
 
           {/* Controles de cantidad */}
@@ -93,7 +93,7 @@ export const CartCardProducts = ({ data }: CartCardProductsProps) => {
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="font-medium">€{(data.price * (data.quantity || 1)).toFixed(2)}</span>
+              <span className="font-medium">{settings?.default_currency} {(data.price * (data.quantity || 1)).toFixed(2)}</span>
               <Button
                 variant="ghost"
                 size="icon"

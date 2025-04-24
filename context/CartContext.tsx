@@ -1,10 +1,13 @@
+// context/CartContext.tsx
 "use client";
 
+import { fetchSettings } from "@/api/setting";
 import { CartItem } from "@/interfaces/CarItem";
 import { createContext, useContext, useState, useEffect } from "react";
 
 interface CartContextType {
   cart: CartItem[];
+  settings: Settings | null; // Agrega la configuración aquí
   addToCart: (item: CartItem) => void;
   removeFromCart: (id: number, selectedAttributes?: { [key: string]: string }) => void;
   updateQuantity: (id: number, quantity: number, selectedAttributes?: { [key: string]: string }) => void;
@@ -15,7 +18,8 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
-  // console.log(cart)
+  const [settings, setSettings] = useState<Settings | null>(null);
+
   // Cargar el carrito desde localStorage al montar el componente
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
@@ -24,21 +28,33 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-
   // Guardar el carrito en localStorage cada vez que cambie
   useEffect(() => {
-    // console.log("Carrito actualizado:", cart); // Depuración
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
+  // Cargar la configuración desde la API usando fetchSettings
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const data = await fetchSettings();
+        console.log("Settings loaded:", data); // Log para verificar los datos
+        setSettings(data);
+      } catch (error) {
+        console.error("Error loading settings:", error);
+      }
+    };
+
+    loadSettings();
+  }, []);
+
   const addToCart = (item: CartItem) => {
-    // console.log("Producto agregado al carrito:", item); // Depuración
     setCart((prevCart) => {
       const existingItemIndex = prevCart.findIndex(
         (cartItem) =>
           cartItem.id === item.id &&
           JSON.stringify(cartItem.selectedAttributes) === JSON.stringify(item.selectedAttributes) &&
-          cartItem.combination_id === item.combination_id // Asegúrate de comparar también combination_id
+          cartItem.combination_id === item.combination_id
       );
 
       if (existingItemIndex !== -1) {
@@ -78,7 +94,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart }}>
+    <CartContext.Provider value={{ cart, settings, addToCart, removeFromCart, updateQuantity, clearCart }}>
       {children}
     </CartContext.Provider>
   );

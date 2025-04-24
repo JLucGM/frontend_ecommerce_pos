@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -32,11 +33,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
         <CartProvider>
-        <AuthProvider>
+          <AuthProvider>
             <Navbar />
             <div className="min-h-screen p-0">{children}</div>
-<Footer />
-            </AuthProvider>
+            <Footer />
+          </AuthProvider>
         </CartProvider>
       </body>
     </html>

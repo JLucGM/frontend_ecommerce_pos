@@ -14,7 +14,7 @@ interface CartSheetProps {
 }
 
 export const CartSheet = ({ className }: CartSheetProps) => {
-    const { cart, removeFromCart, clearCart } = useCart();
+    const { cart, removeFromCart, clearCart, settings } = useCart();
     const [isOpen, setIsOpen] = useState(false); // Estado para controlar la apertura del Sheet
 
     const subtotal = cart.reduce((total, item) => total + item.product_price * item.quantity, 0);
@@ -60,11 +60,11 @@ export const CartSheet = ({ className }: CartSheetProps) => {
                         <SheetFooter className="h-auto z-10">
                             <div className="flex justify-between items-center">
                                 <p className="font-bold">Subtotal</p>
-                                <span>${subtotal.toFixed(2)}</span>
+                                <span>{settings?.default_currency} {subtotal.toFixed(2)}</span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <p className="font-bold">Total</p>
-                                <span>${total.toFixed(2)}</span>
+                                <span>{settings?.default_currency} {total.toFixed(2)}</span>
                             </div> 
                             <Link href={`/store/${slug}/checkout`} className={buttonVariants({ variant: "default" })} onClick={handleCheckout}>
                                 Verificar pedido

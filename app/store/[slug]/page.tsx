@@ -20,10 +20,10 @@ export default function Store() {
 
   const { products, loading, error } = useFetchProducts(validSlug); // Usa el hook personalizado
   const { store } = useFetchStore(validSlug); // Obtén la tienda usando el slug
-  const { addToCart } = useCart(); // Accede a la función para agregar productos al carrito
+  const { addToCart, settings } = useCart(); // Accede a la función para agregar productos al carrito
   const [selectedAttributes, setSelectedAttributes] = useState<{ [key: string]: string }>({}); // Atributos seleccionados
   const [selectedCategory, setSelectedCategory] = useState<string | null>("all"); // Categoría seleccionada
-
+// console.log(settings.default_currency)
   if (loading) {
     return <Loader />;
   }
@@ -89,6 +89,7 @@ export default function Store() {
               <CardProducts
                 key={product.id}
                 product={product}
+                currency={settings ? settings.default_currency : "USD"} 
                 addToCart={addToCart}
                 handleAttributeChange={handleAttributeChange}
                 selectedAttributes={selectedAttributes}

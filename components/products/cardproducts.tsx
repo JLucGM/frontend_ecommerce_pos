@@ -16,22 +16,23 @@ interface Props {
     addToCart: (item: CartItem) => void;
     handleAttributeChange: (attributeName: string, value: string) => void;
     selectedAttributes: { [key: string]: string };
+    currency:any;
 }
 
-export const CardProducts = ({ product, addToCart, handleAttributeChange, selectedAttributes }: Props) => {
+export const CardProducts = ({ product, currency, addToCart, handleAttributeChange, selectedAttributes }: Props) => {
     const [displayImage, setDisplayImage] = useState(product.media[0]?.original_url);
     const [addedToCart, setAddedToCart] = useState(false);
     const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
+console.log('moneda',currency)
     const getPriceRange = () => {
         if (product.combinations.length > 0) {
             const prices = product.combinations.map((combination: any) => parseFloat(combination.combination_price));
             const minPrice = Math.min(...prices);
             const maxPrice = Math.max(...prices);
-            return `$${minPrice.toFixed(2)} - $${maxPrice.toFixed(2)}`;
+            return `${currency} ${minPrice.toFixed(2)} - ${currency} ${maxPrice.toFixed(2)}`;
         }
-        return `$${parseFloat(product.product_price).toFixed(2)}`;
+        return `${currency} ${parseFloat(product.product_price).toFixed(2)}`;
     };
 
     // Encuentra la combinación seleccionada basada en los atributos
@@ -51,7 +52,7 @@ export const CardProducts = ({ product, addToCart, handleAttributeChange, select
     useEffect(() => {
         const selectedCombination = findSelectedCombination();
         if (selectedCombination) {
-            setSelectedPrice(`$${parseFloat(selectedCombination.combination_price).toFixed(2)}`);
+            setSelectedPrice(`${currency} ${parseFloat(selectedCombination.combination_price).toFixed(2)}`);
         } else {
             setSelectedPrice(null); // No hay combinación seleccionada
         }
@@ -272,7 +273,7 @@ export const CardProducts = ({ product, addToCart, handleAttributeChange, select
                     <div className="text-md font-bold">
                         {product.combinations.length === 0 ? (
                             // Producto simple: muestra el precio directamente
-                            <p>Precio: ${parseFloat(product.product_price).toFixed(2)}</p>
+                            <p>Precio: {currency} {parseFloat(product.product_price).toFixed(2)}</p>
                         ) : selectedPrice ? (
                             // Producto con combinaciones: muestra el precio de la combinación seleccionada
                             <p>Precio: {selectedPrice}</p>

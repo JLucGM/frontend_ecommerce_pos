@@ -17,17 +17,18 @@ import { useParams, useRouter } from "next/navigation";
 import { fetchStoreSlug } from "@/api/fetchStore";
 
 export default function CartPage() {
-  const { cart, removeFromCart, clearCart } = useCart();
+  const { cart, removeFromCart, clearCart, settings } = useCart();
   const { user, isAuthenticated } = useAuth(); // Obtén el estado de autenticación y la función de logout
   const [isDialogOpen, setIsDialogOpen] = useState(false); // Estado para controlar el Dialog
   const [paymentMethods, setPaymentMethods] = useState([]);
   const [selectedMethod, setSelectedMethod] = useState<number | null>(null); // Estado para el método seleccionado
   const [storeId, setStoreId] = useState<number | null>(null); // Estado para el ID del store
+  
   const router = useRouter(); // Obtén el router
   const { slug } = useParams(); // Obtén el slug de la URL
   const validSlug = typeof slug === "string" ? slug : "";
 
-    // console.log('cartslug',validSlug)
+  // console.log('cartslug',validSlug)
 
   const subtotal = cart.reduce((total, item) => total + item.product_price * item.quantity, 0);
   const total = subtotal // + taxes; // Si decides usar impuestos, descomenta esta línea
@@ -50,7 +51,7 @@ export default function CartPage() {
         console.error("Error al obtener los datos del store:", error);
       }
     };
-  
+
     if (validSlug) {
       getStoreData();
     }
@@ -74,17 +75,17 @@ export default function CartPage() {
       alert("Por favor, inicia sesión para continuar.");
       return;
     }
-  
+
     if (!selectedMethod) {
       alert("Por favor, selecciona un método de pago.");
       return;
     }
-  
+
     if (storeId === null || storeId === undefined) {
       alert("El ID de la tienda no está disponible. Por favor, intenta de nuevo.");
       return;
     }
-  
+
     const orderData = {
       user_id: user?.id,
       payments_method_id: selectedMethod,
@@ -103,7 +104,7 @@ export default function CartPage() {
         details: item.selectedAttributes || null,
       })),
     };
-  
+
     try {
       const response = await createOrder(orderData);
       router.push(`/store/${validSlug}/checkout/${response.id}/finish`);
@@ -144,7 +145,7 @@ export default function CartPage() {
                       <span className="text-gray-600">Subtotal</span>
                     </div>
                     <div className="pl-3">
-                      <span className="font-semibold">${subtotal.toFixed(2)}</span>
+                      <span className="font-semibold">{settings?.default_currency} {subtotal.toFixed(2)}</span>
                     </div>
                   </div>
                   {/* <div className="w-full flex items-center">
@@ -152,17 +153,25 @@ export default function CartPage() {
                     <span className="text-gray-600">Taxes (GST)</span>
                   </div>
                   <div className="pl-3">
-                    <span className="font-semibold">$19.09</span>
+                    <span className="font-semibold">{settings?.default_currency} 19.09</span>
                   </div>
                 </div> */}
+                  <div className="w-full flex items-center">
+                    <div className="flex-grow">
+                      <span className="text-gray-600">Delivery</span>
+                    </div>
+                    <div className="pl-3">
+                      <span className="font-semibold">{settings?.default_currency} {settings?.shipping_base_price}</span>
+                    </div>
+                  </div>
                   <div className="mb-6 pb-6 border-b border-gray-200 md:border-none text-gray-800 text-xl">
                     <div className="w-full flex items-center">
                       <div className="flex-grow">
                         <span className="text-gray-600">Total</span>
                       </div>
                       <div className="pl-3">
-                        <span className="font-semibold text-gray-400 text-sm">USD</span>{" "}
-                        <span className="font-semibold">${total.toFixed(2)}</span>
+                        {/* <span className="font-semibold text-gray-400 text-sm">USD</span>{" "} */}
+                        <span className="font-semibold">{settings?.default_currency} {total.toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
@@ -217,6 +226,8 @@ export default function CartPage() {
                 </div>
                 <div className="w-full mx-auto rounded-lg bg-white border border-gray-200 p-3 text-gray-800 font-light mb-6">
                   <h3 className="text-lg font-semibold mb-4">Delivery</h3>
+                  
+
                   <div className="">
                     <Label htmlFor="direction">Dirección</Label>
                     <Textarea id="direction" />

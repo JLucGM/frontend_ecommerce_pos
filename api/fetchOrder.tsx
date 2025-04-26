@@ -18,6 +18,7 @@ export const fetchOrder = async (id: string, token?: string): Promise<Order> => 
     }
 
     const data: Order = await response.json();
+    console.log(data)
     return data; // Devuelve los datos de la orden
   } catch (error) {
     console.error('Error al obtener la orden:', error);

@@ -23,7 +23,7 @@ export default function Store() {
   const { addToCart, settings } = useCart(); // Accede a la función para agregar productos al carrito
   const [selectedAttributes, setSelectedAttributes] = useState<{ [key: string]: string }>({}); // Atributos seleccionados
   const [selectedCategory, setSelectedCategory] = useState<string | null>("all"); // Categoría seleccionada
-// console.log(settings.default_currency)
+
   if (loading) {
     return <Loader />;
   }
@@ -32,28 +32,24 @@ export default function Store() {
     return <div>Error: {error}</div>;
   }
 
-  if (!products || products.length === 0) {
-    return notFound(); // Redirige a una página de error si no hay productos
-  }
-
-  // Extraer categorías únicas de los productos
-  const categories = Array.from(
+  // Verifica que products sea un array antes de usar flatMap
+  const categories = Array.isArray(products) ? Array.from(
     new Set(
       products.flatMap((product) =>
         product.categories.map((category: any) => category.category_name)
       )
     )
-  );
+  ) : [];
 
   // Filtrar productos por categoría
   const filteredProducts =
     selectedCategory === "all"
       ? products
-      : products.filter((product) =>
+      : Array.isArray(products) ? products.filter((product) =>
         product.categories.some(
           (category: any) => category.category_name === selectedCategory
         )
-      );
+      ) : [];
 
   // Maneja la selección de atributos
   const handleAttributeChange = (attributeName: string, value: string) => {
@@ -85,16 +81,22 @@ export default function Store() {
         </TabsList>
         <TabsContent value={selectedCategory || "all"} className="py-8 px-28s">
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {filteredProducts.map((product) => (
-              <CardProducts
-                key={product.id}
-                product={product}
-                currency={settings ? settings.default_currency : "USD"} 
-                addToCart={addToCart}
-                handleAttributeChange={handleAttributeChange}
-                selectedAttributes={selectedAttributes}
-              />
-            ))}
+            {Array.isArray(filteredProducts) && filteredProducts.length === 0 ? (
+              <div className="col-span-full text-center py-4">
+                <p>No hay productos disponibles en esta categoría.</p>
+              </div>
+            ) : (
+              Array.isArray(filteredProducts) && filteredProducts.map((product) => (
+                <CardProducts
+                  key={product.id}
+                  product={product}
+                  currency={settings ? settings.default_currency : "USD"} 
+                  addToCart={addToCart}
+                  handleAttributeChange={handleAttributeChange}
+                  selectedAttributes={selectedAttributes}
+                />
+              ))
+            )}
           </div>
         </TabsContent>
       </Tabs>

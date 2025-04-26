@@ -48,14 +48,14 @@ export default function OrdersPage() {
 
   return (
     <>
-    <div className="pt-21 mx-5 w-auto">
+      <div className="pt-21 mx-auto w-auto max-w-5xl">
 
-      <h1 className="font-semibold text-lg">Pedidos</h1>
-      {orders.length > 0 ? (
-        <DataTable columns={columns} data={orders} /> // Usa el DataTable aquí
-      ) : (
-        <p>No hay órdenes disponibles.</p>
-      )}
+        <h1 className="font-semibold text-lg">Pedidos</h1>
+        {orders.length > 0 ? (
+          <DataTable columns={columns} data={orders} /> // Usa el DataTable aquí
+        ) : (
+          <p>No hay órdenes disponibles.</p>
+        )}
       </div>
     </>
   );

@@ -38,7 +38,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     const loadSettings = async () => {
       try {
         const data = await fetchSettings();
-        console.log("Settings loaded:", data); // Log para verificar los datos
+        // console.log("Settings loaded:", data); // Log para verificar los datos
         setSettings(data);
       } catch (error) {
         console.error("Error loading settings:", error);

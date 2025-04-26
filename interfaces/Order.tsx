@@ -1,4 +1,5 @@
 import { Store } from "./Store";
+import { User } from "./User";
 
 // src/interfaces/Order.ts
 export interface OrderItem {
@@ -29,18 +30,7 @@ export interface OrderItem {
     stores: Store[];
     order_items: OrderItem[]; // Asegúrate de incluir esta propiedad
     client?: any; // Si tienes un tipo específico para el cliente, cámbialo aquí
-    user?: {
-      id: number;
-      name: string;
-      slug: string;
-      email: string;
-      identification: string | null;
-      status: string;
-      phone: string;
-      email_verified_at: string | null;
-      created_at: string;
-      updated_at: string;
-    };
+    user?: User; // Cambia esto si tienes un tipo específico para el usuario
     payment_method?: {
       id: number;
       payment_method_name: string;

@@ -52,6 +52,11 @@ export const Navbar = () => {
                     Pedidos
                   </NavigationMenuLink>
                 </Link>
+                <Link href="/auth/profile" legacyBehavior passHref>
+                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                    Perfil
+                  </NavigationMenuLink>
+                </Link>
 
                 <ModeLogout className={navigationMenuTriggerStyle()} />
               </>

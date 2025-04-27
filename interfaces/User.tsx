@@ -2,5 +2,7 @@ export interface User {
     id: number; 
     email: string; 
     name: string
-    phone: number; 
+    phone: string; 
+    identification: string;
+    avatar?: string;
   }

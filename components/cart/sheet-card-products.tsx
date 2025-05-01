@@ -43,7 +43,7 @@ export const SheetCardProducts = ({ data }: CartCardProductsProps) => {
       <CardContent className="p-">
         <div className="flex items-center gap-2">
           {/* Imagen del producto */}
-          <div className="relative h-20 w-20 flex-shrink-0 rounded-md overflow-hidden border">
+          <div className="relative h-20 w-20 flex-shrink-0 rounded-xl overflow-hidden border">
             <img
               src={data.imageUrl || "/placeholder.svg"} // Usa la URL de la imagen o un marcador de posición
               alt={data.name}
@@ -57,7 +57,7 @@ export const SheetCardProducts = ({ data }: CartCardProductsProps) => {
           <div className="flex flex-col flex-1 w-full min-w-0">
             <div className="flex justify-between">
 
-            <h3 className="font-medium text-sm sm:text-base block">{data.name}</h3>
+            <h3 className="font-medium text-sm sm:text-lg block">{data.name}</h3>
             </div>
             {data.selectedAttributes && (
               <ul>
@@ -70,10 +70,10 @@ export const SheetCardProducts = ({ data }: CartCardProductsProps) => {
                 ))}
               </ul>
             )}
-            <div className="mt-1 text-sm font-medium">{settings?.default_currency}{data.price}</div>
+            <div className="mt-1 text-sm font-medium">{settings?.default_currency} {data.price}</div>
           {/* Controles de cantidad */}
           <div className="flex flex-col items-end gap-2 sm:flex-row sm:items-center sm:gap-4">
-            <div className="flex items-center border rounded-md">
+            <div className="flex items-center border rounded-full">
               <Button
                 variant="ghost"
                 size="icon"
@@ -94,7 +94,7 @@ export const SheetCardProducts = ({ data }: CartCardProductsProps) => {
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="font-medium">{settings?.default_currency}{(data.price * (data.quantity || 1)).toFixed(2)}</span>
+              <span className="font-medium">{settings?.default_currency} {(data.price * (data.quantity || 1)).toFixed(2)}</span>
               <Button
                 variant="ghost"
                 size="icon"

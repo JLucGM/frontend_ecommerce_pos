@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Clock, Mail, MapPin, PhoneCall } from "lucide-react";
+import { ArrowUpRight, Clock, Mail, MapPin, PhoneCall } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./button";
 import { Store } from "@/interfaces/Store";
@@ -20,10 +20,10 @@ function CardInfoStore({
     ...props
 }: CardInfoStoreProps) {
     return (
-        <Card  className="border-0 shadow-none">
+        <Card className="border-0 shadow hover:shadow-2xl bg-white p-4">
             <CardHeader className="p-0">
-                <CardTitle>
-                    <h2 className="text-2xl font-bold text-gray-800">{data.store_name}</h2>
+                <CardTitle className="flex">
+                    <h2 className="text-2xl uppercase font-bold text-gray-800 bg-primary-foreground px-4 py-2 rounded-full">{data.store_name}</h2>
                 </CardTitle>
             </CardHeader>
 
@@ -32,7 +32,7 @@ function CardInfoStore({
                     <div className="flex gap-6">
                         <MapPin size={32} />
                         <div>
-                            <h3 className="text-xl font-semibold">Dirección</h3>
+                            <h3 className="text-lg font-bold">Dirección</h3>
                             <p>{data.store_direction}</p>
                         </div>
                     </div>
@@ -42,7 +42,7 @@ function CardInfoStore({
                     <div className="flex gap-6">
                         <PhoneCall size={32} />
                         <div>
-                            <h3 className="text-xl font-semibold">Teléfono</h3>
+                            <h3 className="text-lg font-bold">Teléfono</h3>
                             <p>{data.store_phone}</p>
                         </div>
                     </div>
@@ -50,10 +50,11 @@ function CardInfoStore({
             </CardContent>
 
             <CardFooter className="flex justify-center">
-            {showButton && ( // Renderiza el botón solo si showButton es true
+                {showButton && ( // Renderiza el botón solo si showButton es true
                     <Link href={`/store/${data.slug}`}>
                         <Button className="text-xl" size="lg">
                             Ver tienda
+                            <ArrowUpRight />
                         </Button>
                     </Link>
                 )}

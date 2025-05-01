@@ -1,18 +1,23 @@
 "use client";
 
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Store } from "@/interfaces/Store";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchStores } from "@/api/fetchStores"; // Importa la función
 import { Loader } from "@/components/ui/loader-page";
 import { CardInfoStore } from "@/components/ui/card-info-store";
+import { useCart } from "@/context/CartContext";
+import { ArrowDown } from "lucide-react";
+import { Title } from "@/components/title";
 
 export default function Home() {
+  const { settings } = useCart();
   const [stores, setStores] = useState<Store[]>([]); // Aplica el tipo aquí
   const [loading, setLoading] = useState(true); // Estado de carga
   const [error, setError] = useState<string | null>(null); // Estado de error
+  const storesContainerRef = useRef<HTMLDivElement>(null);
 
   // Fetch data from the API
   useEffect(() => {
@@ -32,6 +37,10 @@ export default function Home() {
     loadStores(); // Llama a la función para cargar las tiendas
   }, []);
 
+  const scrollToStores = () => {
+    storesContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   if (loading) {
     return <Loader />; // Muestra un mensaje de carga
   }
@@ -42,25 +51,36 @@ export default function Home() {
 
   return (
     <>
-      <div className="h-screen flex flex-col justify-center items-center object-cover bg-no-repeat bg-center bg-[url('https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')]">
-        <h1 className="text-white text-5xl font-bold drop-shadow-xl mb-20">
-          tu tienda bien fina
+      <div className="h-screen flex flex-col justify-around items-center object-cover py-10 bg-no-repeat bg-center bg-[url('https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')]">
+
+
+        <h1 className="text-white text-5xl font-bold drop-shadow ">
+          {settings?.app_name}
         </h1>
+
         <div className="flex flex-wrap w-2/4 justify-center items-center p-4 gap-4">
           {stores.map((store) => (
             <Link
               key={store.id}
               href={`/store/${store.slug}`}
-              className={buttonVariants({ variant: "outline", size: "lg" }) + " text-xl bg-gray-200"}
+              className={buttonVariants({ variant: "default", size: "lg" }) + " text-xl px-10"}
             >
               {store.store_name}
             </Link>
           ))}
         </div>
+
+
+        {/* <Button size={'icon'} className="border-2 border-white bg-white/30 backdrop-blur-sm text-white rounded-full animate-bounce" onClick={scrollToStores}>
+          <ArrowDown /> 
+          </Button> */}
+
       </div>
 
-      <div className="px-40 py-15">
-        <h1 className="text-5xl font-bold">Nuestras tiendas</h1>
+      <div className="px-40 py-15 bg-gray-100" ref={storesContainerRef}>{/* mover aqui*/}
+        <Title
+          title="Nuestras tiendas"
+        />
         <Separator className="bg-gray-700 p-0.5 my-4 " />
         <div className="grid grid-cols-2 gap-4">
           {stores.map((store) => (

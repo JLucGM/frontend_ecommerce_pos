@@ -11,7 +11,7 @@ export const Footer = () => {
 
   return (
     <>
-      <div className="flex justify-center mb-5">
+      <div className="flex justify-center mb-5  mt-10">
 
         {logofooter && (
           <img

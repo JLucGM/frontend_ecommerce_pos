@@ -10,18 +10,21 @@ const SECRET_KEY = process.env.SECRET_KEY || '16a91c59880c0387284be7beff8014c7ba
 export const login = async (email: string, password: string) => {
   try {
     const response = await axios.post(`${API_URL}login`, { email, password });
-    
+
     if (response.data && response.data.token) {
       const { id, email, name } = response.data.user;
 
-      // Generar un token JWT con el nombre y el email
+      // Guardar el token de Laravel en localStorage
+      localStorage.setItem("token", response.data.token); // Almacena el token de Laravel
+
+      // Generar un token JWT con el nombre y el email (opcional)
       const jwtToken = jwt.sign(
         { id, email, name },
         SECRET_KEY,
         { expiresIn: '30d' } // 30 días de expiración
       );
 
-      // Guardar el token en una cookie
+      // Guardar el token JWT en una cookie
       document.cookie = serialize('myToken', jwtToken, {
         httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
@@ -30,7 +33,7 @@ export const login = async (email: string, password: string) => {
         maxAge: 60 * 60 * 24 * 30, // 30 días
       });
 
-      return { user: { id, email, name }, token: jwtToken }; // Retorna el usuario y el token
+      return { user: { id, email, name }, token: response.data.token }; // Retorna el usuario y el token de Laravel
     } else {
       throw new Error('No se recibió un token de autenticación.');
     }
@@ -63,6 +66,7 @@ export const logout = async (token: string) => {
       },
     });
 
+    // Eliminar el token de la cookie
     document.cookie = serialize('myToken', '', {
       httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
@@ -73,7 +77,11 @@ export const logout = async (token: string) => {
 
     return response.data;
   } catch (error) {
-    console.error('Error during logout:', error);
+    if (axios.isAxiosError(error)) {
+      console.error('Error during logout:', error.response?.data);
+    } else {
+      console.error('Error during logout:', error);
+    }
     throw error;
   }
 };

@@ -24,7 +24,7 @@ export const CardProducts = ({ product, currency, addToCart, handleAttributeChan
     const [addedToCart, setAddedToCart] = useState(false);
     const [selectedPrice, setSelectedPrice] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-console.log('moneda',currency)
+// console.log('moneda',currency)
     const getPriceRange = () => {
         if (product.combinations.length > 0) {
             const prices = product.combinations.map((combination: any) => parseFloat(combination.combination_price));
@@ -125,14 +125,14 @@ console.log('moneda',currency)
 
     return (
         <Dialog>
-            <DialogTrigger className="p-0 bg-transparent hover:bg-gray-100">
-                <Card className="p-0 cursor-pointer h-full shadow">
+            <DialogTrigger className="p-0 bg-transparent rounded-xl ">
+                <Card className="p-0 cursor-pointer h-full shadow hover:shadow-2xl">
                     <CardHeader className="p-0 h-auto">
                         <AspectRatio ratio={1 / 1}>
                             <img
                                 src={displayImage || product.media[0]?.original_url}
                                 alt={product.product_name}
-                                className="aspect-square h-full rounded-md rounded-tl-lg rounded-tr-lg object-cover"
+                                className="aspect-square h-full rounded-xl rounded-tl-xl rounded-tr-xl object-cover"
                                 onMouseEnter={() => setDisplayImage(product.media[1]?.original_url)}
                                 onMouseLeave={() => setDisplayImage(product.media[0]?.original_url)}
                             />
@@ -273,10 +273,10 @@ console.log('moneda',currency)
                     <div className="text-md font-bold">
                         {product.combinations.length === 0 ? (
                             // Producto simple: muestra el precio directamente
-                            <p>Precio: {currency} {parseFloat(product.product_price).toFixed(2)}</p>
+                            <p>{currency} {parseFloat(product.product_price).toFixed(2)}</p>
                         ) : selectedPrice ? (
                             // Producto con combinaciones: muestra el precio de la combinación seleccionada
-                            <p>Precio: {selectedPrice}</p>
+                            <p>{selectedPrice}</p>
                         ) : (
                             null // No hay combinación seleccionada
                         )}

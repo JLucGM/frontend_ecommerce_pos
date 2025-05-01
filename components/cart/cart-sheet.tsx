@@ -8,6 +8,7 @@ import { buttonVariants } from "../ui/button";
 import { SheetCardProducts } from "./sheet-card-products";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { Separator } from "../ui/separator";
 
 interface CartSheetProps {
     className?: string;
@@ -58,6 +59,7 @@ export const CartSheet = ({ className }: CartSheetProps) => {
                             </div>
                         </ScrollArea>
                         <SheetFooter className="h-auto z-10">
+                        <Separator className="my-4" />
                             <div className="flex justify-between items-center">
                                 <p className="font-bold">Subtotal</p>
                                 <span>{settings?.default_currency} {subtotal.toFixed(2)}</span>

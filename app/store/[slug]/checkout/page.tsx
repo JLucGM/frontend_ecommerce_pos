@@ -117,12 +117,16 @@ export default function CartPage() {
 
   return (
     <div className="pt-26">
-      <div className="w-full max-w-3xl mx-auto">
+      <div className="w-full max-w-6xl mx-auto">
+      <Title
+        title="Carrito de Compras"
+        subtitle="Revisa los productos que has agregado a tu carrito."
+      />
         <div className="w-full">
           {cart.length > 0 ? (
 
-            <div className="-mx-3 md:flex items-start">
-              <div className="px-3 md:w-7/12 lg:pr-10 rounded-lg border">
+            <div className="mx-4 md:flex items-start gap-4">
+              <div className="px-3 md:w-7/12 rounded-xl border shadow">
                 <div className="w-full mx-auto text-gray-800 font-light mb-6 border-b border-gray-200 pb-6">
                   {cart.map((item) => (
                     <CartCardProducts
@@ -186,15 +190,15 @@ export default function CartPage() {
                     </div>
                   ) : (
                     <div className="">
-                      <p>
+                      <p className="text-bold text-gray-600 ">
                         Inicie sesión para finalizar el pedido.
                       </p>
                     </div>
                   )}
                 </div>
               </div>
-              <div className="px-3 md:w-5/12">
-                <div className="w-full mx-auto rounded-lg bg-white border border-gray-200 p-3 text-gray-800 font-light mb-6">
+              <div className="mt-4 md:mt-0 md:w-5/12">
+                <div className="w-full mx-auto shadow-lg rounded-lg bg-white border border-gray-200 p-3 text-gray-800 font-light mb-6">
                   {isAuthenticated ? (
                     <div className="">
                       <h3 className="text-lg font-semibold mb-4">Datos del cliente</h3>
@@ -207,15 +211,15 @@ export default function CartPage() {
                       <DialogTrigger className={buttonVariants({ variant: "default" }) + ' w-full'}>
                         Iniciar sesión
                       </DialogTrigger>
-                      <DialogContent>
+                      <DialogContent >
                         <DialogHeader>
-                          <DialogTitle>Login</DialogTitle>
+                          {/* <DialogTitle>Login</DialogTitle>
                           <DialogDescription>
                             Please log in to continue to checkout.
-                          </DialogDescription>
+                          </DialogDescription> */}
                         </DialogHeader>
                         <LoginForm
-                          redirectTo="/checkout"
+                          redirectTo={`${validSlug}/checkout`}
                           className="w-full max-w-sm mx-auto"
                           onLoginSuccess={handleLoginSuccess} // Pasa la función al LoginForm
                         />
@@ -224,17 +228,15 @@ export default function CartPage() {
                   )}
 
                 </div>
-                <div className="w-full mx-auto rounded-lg bg-white border border-gray-200 p-3 text-gray-800 font-light mb-6">
+                <div className="w-full mx-auto shadow-lg rounded-lg bg-white border border-gray-200 p-3 text-gray-800 font-light mb-6">
                   <h3 className="text-lg font-semibold mb-4">Delivery</h3>
-                  
-
-                  <div className="">
+                  <div>
                     <Label htmlFor="direction">Dirección</Label>
                     <Textarea id="direction" />
                   </div>
                 </div>
 
-                <div className="w-full mx-auto border rounded-lg font-light mb-6 p-4">
+                <div className="w-full shadow-lg mx-auto border rounded-lg font-light mb-6 p-4">
                   <h3 className="text-lg font-semibold mb-4">Métodos de Pago</h3>
                   <Accordion type="single" collapsible>
                     {Array.isArray(paymentMethods) && paymentMethods.length > 0 ? (

@@ -26,7 +26,7 @@ export const Navbar = () => {
   const isHomePage = pathname === "/";
 
   return (
-    <div className="fixed top-0 left-0 w-full flex justify-between items-center px-5 py-2 shadow bg-white z-50">
+    <div className="fixed top-0 left-0 w-full flex justify-between items-center px-5 py-3 shadow bg-white z-50">
       {logo && (
         <img
           src={logo}

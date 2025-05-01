@@ -18,7 +18,7 @@ export const fetchUser  = async (id: number): Promise<User> => {
     }
 
     const data: User = await response.json();
-    console.log('User  data:', data);
+    // console.log('User  data:', data);
     return data; // Devuelve los datos del usuario
   } catch (error) {
     console.error('Error al obtener el usuario:', error);

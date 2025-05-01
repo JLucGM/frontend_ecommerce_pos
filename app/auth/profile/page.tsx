@@ -23,11 +23,11 @@ export default function ProfilePage() {
     const [phone, setPhone] = useState<string>(""); // Estado para el teléfono
     const [error, setError] = useState<string>(""); // Estado para manejar errores
 
-    useEffect(() => {
-        if (!isAuthenticated) {
-            router.push("/auth/login");
-        }
-    }, [isAuthenticated, router]);
+    // useEffect(() => {
+    //     if (!isAuthenticated) {
+    //       router.push("/auth/login");
+    //     }
+    //   }, [isAuthenticated, router]);
 
     useEffect(() => {
         const getUser = async () => {
@@ -52,14 +52,14 @@ export default function ProfilePage() {
     }, [isAuthenticated, user]);
 
     // Muestra un loader mientras se determina el estado de autenticación
-    if (loading) {
-        return <div>Cargando...</div>;
-    }
+    // if (loading) {
+    //     return <div>Cargando...</div>;
+    // }
 
     // Si el usuario no está autenticado, no renderiza nada (el redireccionamiento ya ocurrió)
-    if (!isAuthenticated) {
-        return null;
-    }
+    // if (!isAuthenticated) {
+    //     return <h1 className="mt-40">no estas logueado</h1>;
+    // }
 
     // Función para manejar la actualización del usuario
     const handleUpdate = async (e: React.FormEvent) => {
@@ -73,10 +73,10 @@ export default function ProfilePage() {
 
         try {
             const updatedData: Partial<User> = { name, email, identification, phone }; // Datos a actualizar
-            console.log('Datos a actualizar enviado desde la vista:', updatedData); // Muestra los datos a actualizar en la consola
+            // console.log('Datos a actualizar enviado desde la vista:', updatedData); // Muestra los datos a actualizar en la consola
             const updatedUser = await updateUser(user.id, updatedData); // Llama a updateUser       
             setFetchedUser(updatedUser); // Actualiza el estado con los datos del usuario actualizado
-            console.log('Usuario actualizado:', updatedUser);
+            // console.log('Usuario actualizado:', updatedUser);
         } catch (error) {
             setError('Error al actualizar el usuario'); // Manejo de errores
             console.error('Error al actualizar el usuario:', error);
@@ -85,7 +85,10 @@ export default function ProfilePage() {
 
     // Renderiza el contenido del perfil si el usuario está autenticado
     return (
+        
         <div className="pt-25 items-center md:mt-0 justify-center min-h-screen w-3xl  mx-auto">
+            {isAuthenticated ? (
+                <>
             <Title
                 title="Perfil"
             />
@@ -162,12 +165,18 @@ export default function ProfilePage() {
                     </Button>
                 </div>
             </form>
-            {/* <div className="mt-4">
-                <p>Nombre: {fetchedUser?.name}</p>
-                <p>Email: {fetchedUser?.email}</p>
-                <p>identification: {fetchedUser?.identification}</p>
-                <p>phone: {fetchedUser?.phone}</p>
-            </div> */}
+            </>
+
+) : (
+    <>
+            <div className="pt-25 items-center md:mt-0 justify-center min-h-screen w-3xl  mx-auto">
+
+      no estas logueadoss
         </div>
+    </>
+  )}
+
+        </div>
+        
     );
 }

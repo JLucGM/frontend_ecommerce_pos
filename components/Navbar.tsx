@@ -1,19 +1,19 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
+import { NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { CartSheet } from "@/components/cart/cart-sheet";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { ModeLogout } from "./auth/ModeLogout";
-import { fetchSettings } from "@/api/setting";
 import { usePathname } from "next/navigation"; // Importa usePathname
+import { Menubar, MenubarContent, MenubarItem, MenubarMenu, MenubarSeparator, MenubarShortcut, MenubarTrigger } from "./ui/menubar";
+import { ChevronDown, LogOut } from "lucide-react";
 
 export const Navbar = () => {
   const { cart, settings } = useCart();
-  const { isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const pathname = usePathname(); // Obtén la ruta actual
 
   // Calcula el total de productos en el carrito
@@ -47,18 +47,33 @@ export const Navbar = () => {
           <NavigationMenuItem>
             {isAuthenticated ? (
               <>
-                <Link href="/orders" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Pedidos
-                  </NavigationMenuLink>
-                </Link>
-                <Link href="/auth/profile" legacyBehavior passHref>
-                  <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    Perfil
-                  </NavigationMenuLink>
-                </Link>
+                <Menubar className={` border-0 shadow-none`}>
+                  <MenubarMenu>
+                    <MenubarTrigger className={`${navigationMenuTriggerStyle()}`}>
+                      {user?.name} <ChevronDown className="ms-1 size-4" />
+                    </MenubarTrigger>
+                    <MenubarContent>
+                      <NavigationMenuLink href="/auth/profile">
+                        <MenubarItem>
+                          Perfil
+                        </MenubarItem>
+                      </NavigationMenuLink>
 
-                <ModeLogout className={navigationMenuTriggerStyle()} />
+                      <NavigationMenuLink href="/orders">
+                        <MenubarItem>
+                          Pedidos
+                        </MenubarItem>
+                      </NavigationMenuLink>
+                      <MenubarSeparator />
+                      <MenubarItem>
+                        <ModeLogout />
+                        <MenubarShortcut>
+                          <LogOut />
+                        </MenubarShortcut>
+                      </MenubarItem>
+                    </MenubarContent>
+                  </MenubarMenu>
+                </Menubar>
               </>
             ) : (
               <>
@@ -76,11 +91,11 @@ export const Navbar = () => {
             )}
           </NavigationMenuItem>
 
-                {!isHomePage && totalProducts > 0 && (
-          <NavigationMenuItem>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              <div className="relative">
-                {/* Mostrar CartSheet solo si hay productos en el carrito y no estamos en la página de inicio */}
+          {!isHomePage && totalProducts > 0 && (
+            <NavigationMenuItem>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                <div className="relative">
+                  {/* Mostrar CartSheet solo si hay productos en el carrito y no estamos en la página de inicio */}
                   <>
                     <CartSheet />
                     <Badge
@@ -89,10 +104,10 @@ export const Navbar = () => {
                       {totalProducts}
                     </Badge>
                   </>
-              </div>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-                )}
+                </div>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          )}
         </NavigationMenuList>
       </NavigationMenu>
     </div>

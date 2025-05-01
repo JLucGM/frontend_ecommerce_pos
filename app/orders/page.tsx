@@ -6,6 +6,7 @@ import { Order } from "@/interfaces/Order"; // Asegúrate de que la ruta sea cor
 import { fetchOrders } from "@/api/ordersList"; // Asegúrate de que la ruta sea correcta
 import { columns } from "./columns"; // Asegúrate de que la ruta sea correcta
 import { DataTable } from "@/components/orders/DataTable";
+import { Title } from "@/components/title";
 
 export default function OrdersPage() {
   const { user } = useAuth(); // Obtén el usuario logueado
@@ -50,7 +51,9 @@ export default function OrdersPage() {
     <>
       <div className="pt-21 mx-auto w-auto max-w-5xl">
 
-        <h1 className="font-semibold text-lg">Pedidos</h1>
+        <Title
+               title="Pedidos"
+               />
         {orders.length > 0 ? (
           <DataTable columns={columns} data={orders} /> // Usa el DataTable aquí
         ) : (

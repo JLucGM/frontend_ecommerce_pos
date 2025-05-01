@@ -9,6 +9,7 @@ import { Order } from "@/interfaces/Order"; // Asegúrate de que la ruta y la in
 import { Table, TableBody, TableCell, TableFooter, TableRow } from "@/components/ui/table";
 import { useCart } from "@/context/CartContext";
 import { Badge } from "@/components/ui/badge";
+import { Title } from "@/components/title";
 
 export default function FinishPage() {
   const { id } = useParams(); // Obtén el id de la URL
@@ -59,8 +60,12 @@ export default function FinishPage() {
     <div className="flex flex-col items-center justify-center h-screen ">
 
       <CircleCheckBig className="text-green-500 mb-4" size={64} />
-      <p className="text-2xl font-bold mb-4">¡Compra exitosa!</p>
-      <p className="text-2xl font-bold mb-4">¡Gracias por tu compra!</p>
+      <Title
+       title="¡Compra exitosa!"
+       subtitle="¡Gracias por tu compra!"
+       />
+      {/* <p className="text-2xl font-bold mb-4">¡Compra exitosa!</p>
+      <p className="text-2xl font-bold mb-4">¡Gracias por tu compra!</p> */}
       {/* <p className="mb-4">Nro. de la orden: {order?.id}</p> */}
 
       {order && (
@@ -103,7 +108,7 @@ export default function FinishPage() {
                               <span>
                                 {Object.entries(details).map(([key, value]) => (
                                   <span key={key}>
-                                    {key}: {value}{" "}
+                                    {key}<br/> {value}{" "}
                                   </span>
                                 ))}
                               </span>

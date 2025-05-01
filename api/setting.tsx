@@ -7,7 +7,7 @@ export const fetchSettings = async () => {
       throw new Error(`Error fetching settings: ${response.statusText}`);
     }
     const data = await response.json();
-    console.log("Settings data:", data); // Para depuración
+    // console.log("Settings data:", data); // Para depuración
     return data; // Asegúrate de que esto devuelva la estructura correcta
   } catch (error) {
     console.error("Error fetching settings:", error);

@@ -7,6 +7,6 @@ export const fetchProductsByStore = async (slug: string) => {
     }
   
     const data = await response.json();
-    console.log(data); // Muestra los productos en la consola
+    // console.log(data); // Muestra los productos en la consola
     return data; // Devuelve los productos
   };

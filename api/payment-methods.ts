@@ -9,7 +9,7 @@ export const fetchPaymentMethods = async () => {
       }
   
       const data = await response.json();
-      console.log(data); // Muestra los métodos de pago en la consola
+      // console.log(data); // Muestra los métodos de pago en la consola
       return data.paymentMethod || [];
     } catch (error) {
       console.error("Error al obtener métodos de pago:", error);

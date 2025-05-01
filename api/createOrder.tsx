@@ -23,7 +23,7 @@ export const createOrder = async (orderData: any) => {
     }
   
       const data = await response.json();
-      console.log('Orden creada:', data); // Muestra la respuesta en la consola
+      // console.log('Orden creada:', data); // Muestra la respuesta en la consola
       return data; // Devuelve la respuesta de la API
     } catch (error) {
       console.error('Error al crear la orden:', error);

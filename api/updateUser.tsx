@@ -20,7 +20,7 @@ export const updateUser  = async (id: number, updatedData: Partial<User>): Promi
       }
   
       const data: User = await response.json();
-      console.log('Usuario actualizado:', data);
+      // console.log('Usuario actualizado:', data);
       return data; // Devuelve los datos actualizados del usuario
     } catch (error) {
       console.error('Error al actualizar el usuario:', error);
